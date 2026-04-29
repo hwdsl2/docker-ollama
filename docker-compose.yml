@@ -1,0 +1,13 @@
+services:
+  ollama:
+    image: hwdsl2/ollama-server
+    container_name: ollama
+    restart: always
+    ports:
+      - "11434:11434/tcp"
+    volumes:
+      - ollama-data:/var/lib/ollama
+      - ./ollama.env:/ollama.env:ro
+
+volumes:
+  ollama-data:
