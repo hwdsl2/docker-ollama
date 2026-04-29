@@ -515,7 +515,7 @@ volumes:
 ## Технические подробности
 
 - Базовый образ: `debian:trixie-slim` (CPU) / `nvidia/cuda:12.9.1-base-ubuntu24.04` (CUDA)
-- Размер образа: ~75 МБ (CPU) / ~10 ГБ (CUDA)
+- Размер образа: ~70 МБ (CPU) / ~3.2 ГБ (CUDA)
 - Ollama: последняя версия, установлена как статический бинарный файл
 - Прокси аутентификации: [Caddy](https://caddyserver.com) (всегда активен, обеспечивает аутентификацию Bearer Token)
 - Каталог данных: `/var/lib/ollama` (Docker-том)
@@ -532,6 +532,6 @@ Copyright (C) 2026 Lin Song
 
 **Ollama** является собственностью (C) 2023 Ollama и распространяется под [лицензией MIT](https://github.com/ollama/ollama/blob/main/LICENSE).
 
-**Caddy** является собственностью (C) Matthew Holt и авторов Caddy, и распространяется под [лицензией Apache 2.0](https://github.com/caddyserver/caddy/blob/master/LICENSE).
+**Caddy** является собственностью (C) 2015 Matthew Holt и авторов Caddy, и распространяется под [лицензией Apache 2.0](https://github.com/caddyserver/caddy/blob/master/LICENSE).
 
 Этот проект представляет собой независимую Docker-конфигурацию для Ollama и не связан с Ollama, не одобрен и не спонсируется ею.

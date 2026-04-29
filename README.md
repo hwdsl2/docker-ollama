@@ -515,7 +515,7 @@ volumes:
 ## Technical details
 
 - Base image: `debian:trixie-slim` (CPU) / `nvidia/cuda:12.9.1-base-ubuntu24.04` (CUDA)
-- Image size: ~75MB (CPU) / ~10GB (CUDA)
+- Image size: ~70MB (CPU) / ~3.2GB (CUDA)
 - Ollama: latest release, installed as a static binary
 - Auth proxy: [Caddy](https://caddyserver.com) (always active, enforces Bearer token auth)
 - Data directory: `/var/lib/ollama` (Docker volume)
@@ -532,6 +532,6 @@ This work is licensed under the [MIT License](https://opensource.org/licenses/MI
 
 **Ollama** is Copyright (C) 2023 Ollama, and is distributed under the [MIT License](https://github.com/ollama/ollama/blob/main/LICENSE).
 
-**Caddy** is Copyright (C) Matthew Holt and The Caddy Authors, and is distributed under the [Apache License 2.0](https://github.com/caddyserver/caddy/blob/master/LICENSE).
+**Caddy** is Copyright (C) 2015 Matthew Holt and The Caddy Authors, and is distributed under the [Apache License 2.0](https://github.com/caddyserver/caddy/blob/master/LICENSE).
 
 This project is an independent Docker setup for Ollama and is not affiliated with, endorsed by, or sponsored by Ollama.

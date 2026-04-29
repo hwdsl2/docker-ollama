@@ -515,7 +515,7 @@ volumes:
 ## 技術細節
 
 - 基礎映像：`debian:trixie-slim`（CPU）/ `nvidia/cuda:12.9.1-base-ubuntu24.04`（CUDA）
-- 映像大小：約 75MB（CPU）/ 約 10GB（CUDA）
+- 映像大小：約 70MB（CPU）/ 約 3.2GB（CUDA）
 - Ollama：最新版本，以靜態二進位檔案安裝
 - 驗證代理：[Caddy](https://caddyserver.com)（始終啟用，強制執行 Bearer Token 驗證）
 - 資料目錄：`/var/lib/ollama`（Docker 卷）
@@ -532,6 +532,6 @@ volumes:
 
 **Ollama** 版權所有 (C) 2023 Ollama，基於 [MIT 授權條款](https://github.com/ollama/ollama/blob/main/LICENSE)分發。
 
-**Caddy** 版權所有 (C) Matthew Holt 和 Caddy 作者，基於 [Apache 授權條款 2.0](https://github.com/caddyserver/caddy/blob/master/LICENSE) 分發。
+**Caddy** 版權所有 (C) 2015 Matthew Holt 和 Caddy 作者，基於 [Apache 授權條款 2.0](https://github.com/caddyserver/caddy/blob/master/LICENSE) 分發。
 
 本專案是 Ollama 的獨立 Docker 設定，與 Ollama 沒有任何關聯、背書或贊助關係。

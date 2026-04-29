@@ -32,6 +32,6 @@ This Docker image incorporates the following third-party software:
 - https://github.com/ollama/ollama/blob/main/LICENSE
 
 **Caddy**
-- Copyright (C) Matthew Holt and The Caddy Authors
+- Copyright (C) 2015 Matthew Holt and The Caddy Authors
 - Licensed under the Apache License 2.0
 - https://github.com/caddyserver/caddy/blob/master/LICENSE
