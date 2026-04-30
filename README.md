@@ -14,10 +14,10 @@ Docker image to run an [Ollama](https://github.com/ollama/ollama) local LLM serv
 - Model management via a helper script (`ollama_manage`)
 - OpenAI-compatible API — point any OpenAI SDK or app at your local server with a one-line change
 - Caddy reverse proxy enforces Bearer token auth on all API requests (except `/` health check)
-- GPU acceleration support via a sibling CUDA image (`hwdsl2/ollama-server:cuda`)
+- NVIDIA GPU (CUDA) acceleration for faster inference (`:cuda` image tag)
 - Automatically built and published via [GitHub Actions](https://github.com/hwdsl2/docker-ollama/actions/workflows/main.yml)
 - Persistent model storage via a Docker volume
-- Multi-arch: `linux/amd64`, `linux/arm64`
+- Lightweight image (~70MB); multi-arch: `linux/amd64`, `linux/arm64`
 
 **Also available:**
 
@@ -28,7 +28,7 @@ Docker image to run an [Ollama](https://github.com/ollama/ollama) local LLM serv
 
 ## Security note
 
-> ~175,000 Ollama servers were found publicly exposed without authentication in 2026. A bare Ollama install binds to all interfaces with no auth by default. This image is different: **all API requests require a Bearer token** (auto-generated if not set). A built-in Caddy auth proxy enforces authentication, so even if the port is accidentally exposed to the internet, unauthorized access is blocked.
+~175,000 Ollama servers were found publicly exposed without authentication ([source](https://www.sentinelone.com/labs/silent-brothers-ollama-hosts-form-anonymous-ai-network-beyond-platform-guardrails/)). A bare Ollama install binds to all interfaces with no auth by default. This image enforces **Bearer token authentication on all API requests** via a built-in auth proxy, so unauthorized access is blocked even if the port is accidentally exposed.
 
 ## Quick start
 
@@ -107,8 +107,15 @@ To learn more about how to use this image, read the sections below.
 
 - A Linux server (local or cloud) with Docker installed
 - Sufficient disk space for models (3B models ≈ 2GB, 7B models ≈ 4–5GB, 14B+ models ≈ 8–10GB+)
-- For GPU acceleration: an NVIDIA GPU with CUDA support and the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)
+- Sufficient RAM to run models (3B models ≈ 2–4GB, 7B models ≈ 6–8GB, 14B+ models ≈ 12–16GB+)
 - TCP port 11434 (or your configured port) accessible
+
+**For GPU acceleration (`:cuda` image):**
+
+- NVIDIA GPU with CUDA support
+- [NVIDIA driver](https://www.nvidia.com/en-us/drivers/) installed on the host
+- [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) installed
+- The `:cuda` image supports `linux/amd64` only
 
 ## Download
 
@@ -131,7 +138,7 @@ docker pull quay.io/hwdsl2/ollama-server
 docker image tag quay.io/hwdsl2/ollama-server hwdsl2/ollama-server
 ```
 
-Supported platforms: `linux/amd64` and `linux/arm64`.
+Supported platforms: `linux/amd64` and `linux/arm64`. The `:cuda` tag supports `linux/amd64` only.
 
 ## Environment variables
 
@@ -330,7 +337,7 @@ Use `docker-compose.cuda.yml` to run with NVIDIA GPU support:
 docker compose -f docker-compose.cuda.yml up -d
 ```
 
-Requirements: NVIDIA GPU + [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html).
+**Requirements:** NVIDIA GPU and the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) installed on the host. The `:cuda` image is `linux/amd64` only.
 
 ## Using a reverse proxy
 
@@ -388,7 +395,7 @@ Your downloaded models are preserved in the `ollama-data` volume.
 
 ## Using with other AI services
 
-The [Ollama](https://github.com/hwdsl2/docker-ollama), [LiteLLM](https://github.com/hwdsl2/docker-litellm), [Whisper (STT)](https://github.com/hwdsl2/docker-whisper), [Kokoro (TTS)](https://github.com/hwdsl2/docker-kokoro), and [Embeddings](https://github.com/hwdsl2/docker-embeddings) images can be combined to build a complete, private AI stack on your own server — from voice I/O to RAG-powered question answering. Ollama runs all LLM inference locally, so no data is sent to third parties. When using LiteLLM with external providers (e.g., OpenAI, Anthropic), your data will be sent to those providers.
+The [Ollama](https://github.com/hwdsl2/docker-ollama), [LiteLLM](https://github.com/hwdsl2/docker-litellm), [Whisper (STT)](https://github.com/hwdsl2/docker-whisper), [Kokoro (TTS)](https://github.com/hwdsl2/docker-kokoro), and [Embeddings](https://github.com/hwdsl2/docker-embeddings) images can be combined to build a complete, private AI stack on your own server — from voice I/O to RAG-powered question answering. Whisper, Kokoro, and Embeddings run fully locally. Ollama runs all LLM inference locally, so no data is sent to third parties. When using LiteLLM with external providers (e.g., OpenAI, Anthropic), your data will be sent to those providers.
 
 ```mermaid
 graph LR

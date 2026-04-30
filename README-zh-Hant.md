@@ -14,10 +14,10 @@
 - 透過輔助腳本（`ollama_manage`）管理模型
 - 與 OpenAI 相容的 API — 只需修改一行即可將任何 OpenAI SDK 或應用程式指向本地伺服器
 - Caddy 反向代理對所有 API 請求強制執行 Bearer Token 驗證（`/` 健康檢查除外）
-- 透過同系列 CUDA 映像（`hwdsl2/ollama-server:cuda`）支援 GPU 加速
+- NVIDIA GPU (CUDA) 加速推論（使用 `:cuda` 映像標籤）
 - 透過 [GitHub Actions](https://github.com/hwdsl2/docker-ollama/actions/workflows/main.yml) 自動建置和發布
 - 透過 Docker 卷持久化儲存模型資料
-- 多架構：`linux/amd64`、`linux/arm64`
+- 輕量級映像（約 70MB）；多架構：`linux/amd64`、`linux/arm64`
 
 **另提供：**
 
@@ -28,7 +28,7 @@
 
 ## 安全說明
 
-> 2026 年發現約 175,000 台 Ollama 伺服器在未經驗證的情況下公開暴露。裸裝的 Ollama 預設綁定到所有介面且無驗證。本映像有所不同：**所有 API 請求均需 Bearer Token**（未設定時自動產生）。內建的 Caddy 驗證代理強制執行驗證，即使連接埠意外暴露到網際網路，未授權存取也會被阻止。
+約 175,000 台 Ollama 伺服器被發現在未經驗證的情況下公開暴露（[來源](https://www.sentinelone.com/labs/silent-brothers-ollama-hosts-form-anonymous-ai-network-beyond-platform-guardrails/)）。裸裝的 Ollama 預設綁定到所有介面且無驗證。本映像透過內建驗證代理對**所有 API 請求強制執行 Bearer Token 驗證**，即使連接埠意外暴露，未授權存取也會被阻止。
 
 ## 快速開始
 
@@ -107,8 +107,15 @@ curl http://localhost:11434/api/chat \
 
 - 已安裝 Docker 的 Linux 伺服器（本地或雲端）
 - 足夠的磁碟空間用於儲存模型（3B 模型 ≈ 2GB，7B 模型 ≈ 4–5GB，14B+ 模型 ≈ 8–10GB+）
-- 如需 GPU 加速：支援 CUDA 的 NVIDIA GPU 以及 [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)
+- 足夠的記憶體以執行模型（3B 模型 ≈ 2–4GB，7B 模型 ≈ 6–8GB，14B+ 模型 ≈ 12–16GB+）
 - TCP 連接埠 11434（或您設定的連接埠）需可存取
+
+**GPU 加速（`:cuda` 映像）需求：**
+
+- 支援 CUDA 的 NVIDIA GPU
+- 主機已安裝 [NVIDIA 驅動程式](https://www.nvidia.com/en-us/drivers/)
+- 已安裝 [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)
+- `:cuda` 映像僅支援 `linux/amd64`
 
 ## 下載
 
@@ -131,7 +138,7 @@ docker pull quay.io/hwdsl2/ollama-server
 docker image tag quay.io/hwdsl2/ollama-server hwdsl2/ollama-server
 ```
 
-支援平台：`linux/amd64` 和 `linux/arm64`。
+支援平台：`linux/amd64` 和 `linux/arm64`。`:cuda` 標籤僅支援 `linux/amd64`。
 
 ## 環境變數
 
@@ -330,7 +337,7 @@ volumes:
 docker compose -f docker-compose.cuda.yml up -d
 ```
 
-需求：NVIDIA GPU 和 [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)。
+**需求：** NVIDIA GPU 以及主機上已安裝 [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)。`:cuda` 映像僅支援 `linux/amd64`。
 
 ## 使用反向代理
 
@@ -388,7 +395,7 @@ docker rm -f ollama
 
 ## 與其他 AI 服務配合使用
 
-[Ollama](https://github.com/hwdsl2/docker-ollama)、[LiteLLM](https://github.com/hwdsl2/docker-litellm)、[Whisper (STT)](https://github.com/hwdsl2/docker-whisper)、[Kokoro (TTS)](https://github.com/hwdsl2/docker-kokoro) 和 [Embeddings](https://github.com/hwdsl2/docker-embeddings) 映像可以組合在一起，在您自己的伺服器上建置完整的私有 AI 技術堆疊——從語音輸入/輸出到 RAG 問答。Ollama 在本地執行所有 LLM 推論，無需向第三方傳送資料。使用 LiteLLM 接入外部提供商（如 OpenAI、Anthropic）時，您的資料將傳送給這些提供商。
+[Ollama](https://github.com/hwdsl2/docker-ollama)、[LiteLLM](https://github.com/hwdsl2/docker-litellm)、[Whisper (STT)](https://github.com/hwdsl2/docker-whisper)、[Kokoro (TTS)](https://github.com/hwdsl2/docker-kokoro) 和 [Embeddings](https://github.com/hwdsl2/docker-embeddings) 映像可以組合在一起，在您自己的伺服器上建置完整的私有 AI 技術堆疊——從語音輸入/輸出到 RAG 問答。Whisper、Kokoro 和 Embeddings 完全在本地執行。Ollama 在本地執行所有 LLM 推論，無需向第三方傳送資料。使用 LiteLLM 接入外部提供商（如 OpenAI、Anthropic）時，您的資料將傳送給這些提供商。
 
 ```mermaid
 graph LR

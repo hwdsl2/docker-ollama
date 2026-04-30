@@ -14,10 +14,10 @@ Docker-образ для запуска локального LLM-сервера 
 - Управление моделями через вспомогательный скрипт (`ollama_manage`)
 - Совместимый с OpenAI API — укажите любой OpenAI SDK или приложение на ваш локальный сервер, изменив одну строку
 - Обратный прокси Caddy обеспечивает аутентификацию Bearer Token для всех API-запросов (кроме `/` для проверки работоспособности)
-- Поддержка GPU-ускорения через сопутствующий CUDA-образ (`hwdsl2/ollama-server:cuda`)
+- Ускорение на GPU NVIDIA (CUDA) для более быстрого инференса (тег образа `:cuda`)
 - Автоматическая сборка и публикация через [GitHub Actions](https://github.com/hwdsl2/docker-ollama/actions/workflows/main.yml)
 - Постоянное хранение моделей через Docker-том
-- Мультиархитектурный: `linux/amd64`, `linux/arm64`
+- Лёгкий образ (~70 МБ); мультиархитектурный: `linux/amd64`, `linux/arm64`
 
 **Также доступно:**
 
@@ -28,7 +28,7 @@ Docker-образ для запуска локального LLM-сервера 
 
 ## Замечание по безопасности
 
-> В 2026 году было обнаружено около 175 000 серверов Ollama, публично доступных без аутентификации. Стандартная установка Ollama по умолчанию привязывается ко всем интерфейсам без аутентификации. Этот образ работает иначе: **все API-запросы требуют Bearer Token** (автоматически генерируется, если не задан). Встроенный прокси аутентификации Caddy обеспечивает защиту, поэтому даже при случайном открытии порта в интернет несанкционированный доступ будет заблокирован.
+Около 175 000 серверов Ollama были обнаружены публично доступными без аутентификации ([источник](https://www.sentinelone.com/labs/silent-brothers-ollama-hosts-form-anonymous-ai-network-beyond-platform-guardrails/)). Стандартная установка Ollama по умолчанию привязывается ко всем интерфейсам без аутентификации. Этот образ через встроенный прокси аутентификации обеспечивает **аутентификацию Bearer Token для всех API-запросов**, поэтому даже при случайном открытии порта несанкционированный доступ будет заблокирован.
 
 ## Быстрый старт
 
@@ -107,8 +107,15 @@ curl http://localhost:11434/api/chat \
 
 - Сервер Linux (локальный или облачный) с установленным Docker
 - Достаточно места на диске для моделей (3B модели ≈ 2 ГБ, 7B модели ≈ 4–5 ГБ, 14B+ модели ≈ 8–10 ГБ+)
-- Для GPU-ускорения: NVIDIA GPU с поддержкой CUDA и [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)
+- Достаточно оперативной памяти для запуска моделей (3B модели ≈ 2–4 ГБ, 7B модели ≈ 6–8 ГБ, 14B+ модели ≈ 12–16 ГБ+)
 - TCP-порт 11434 (или настроенный вами) должен быть доступен
+
+**Для ускорения на GPU (образ `:cuda`):**
+
+- NVIDIA GPU с поддержкой CUDA
+- [Драйвер NVIDIA](https://www.nvidia.com/en-us/drivers/) установлен на хосте
+- Установленный [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)
+- Образ `:cuda` поддерживает только `linux/amd64`
 
 ## Загрузка
 
@@ -131,7 +138,7 @@ docker pull quay.io/hwdsl2/ollama-server
 docker image tag quay.io/hwdsl2/ollama-server hwdsl2/ollama-server
 ```
 
-Поддерживаемые платформы: `linux/amd64` и `linux/arm64`.
+Поддерживаемые платформы: `linux/amd64` и `linux/arm64`. Тег `:cuda` поддерживает только `linux/amd64`.
 
 ## Переменные окружения
 
@@ -330,7 +337,7 @@ volumes:
 docker compose -f docker-compose.cuda.yml up -d
 ```
 
-Требования: NVIDIA GPU и [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html).
+**Требования:** NVIDIA GPU и установленный на хосте [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html). Образ `:cuda` поддерживает только `linux/amd64`.
 
 ## Использование обратного прокси
 
@@ -388,7 +395,7 @@ docker rm -f ollama
 
 ## Использование с другими сервисами ИИ
 
-Образы [Ollama](https://github.com/hwdsl2/docker-ollama), [LiteLLM](https://github.com/hwdsl2/docker-litellm), [Whisper (STT)](https://github.com/hwdsl2/docker-whisper), [Kokoro (TTS)](https://github.com/hwdsl2/docker-kokoro) и [Embeddings](https://github.com/hwdsl2/docker-embeddings) можно объединить для создания полного приватного стека ИИ на вашем сервере — от голосового ввода/вывода до RAG-ответов на вопросы. Ollama выполняет весь инференс LLM локально, данные не отправляются третьим сторонам. При использовании LiteLLM с внешними провайдерами (например, OpenAI, Anthropic) ваши данные будут отправлены этим провайдерам.
+Образы [Ollama](https://github.com/hwdsl2/docker-ollama), [LiteLLM](https://github.com/hwdsl2/docker-litellm), [Whisper (STT)](https://github.com/hwdsl2/docker-whisper), [Kokoro (TTS)](https://github.com/hwdsl2/docker-kokoro) и [Embeddings](https://github.com/hwdsl2/docker-embeddings) можно объединить для создания полного приватного стека ИИ на вашем сервере — от голосового ввода/вывода до RAG-ответов на вопросы. Whisper, Kokoro и Embeddings работают полностью локально. Ollama выполняет весь инференс LLM локально, данные не отправляются третьим сторонам. При использовании LiteLLM с внешними провайдерами (например, OpenAI, Anthropic) ваши данные будут отправлены этим провайдерам.
 
 ```mermaid
 graph LR
