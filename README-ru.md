@@ -23,8 +23,9 @@ Docker-образ для запуска локального LLM-сервера 
 
 - ИИ/Аудио: [Whisper (STT)](https://github.com/hwdsl2/docker-whisper/blob/main/README-ru.md), [Kokoro (TTS)](https://github.com/hwdsl2/docker-kokoro/blob/main/README-ru.md), [Embeddings](https://github.com/hwdsl2/docker-embeddings/blob/main/README-ru.md), [LiteLLM](https://github.com/hwdsl2/docker-litellm/blob/main/README-ru.md)
 - VPN: [WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-ru.md), [OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-ru.md), [IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-ru.md), [Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/README-ru.md)
+- Инструменты: [MCP Gateway](https://github.com/hwdsl2/docker-mcp-gateway/blob/main/README-ru.md)
 
-**Совет:** Ollama, LiteLLM, Whisper, Kokoro и Embeddings можно [использовать совместно](#использование-с-другими-сервисами-ии) для создания полного приватного стека ИИ на вашем сервере.
+**Совет:** Ollama, LiteLLM, Whisper, Kokoro, Embeddings и MCP-шлюз можно [использовать совместно](#использование-с-другими-сервисами-ии) для создания полного приватного стека ИИ на вашем сервере.
 
 ## Замечание по безопасности
 
@@ -395,7 +396,7 @@ docker rm -f ollama
 
 ## Использование с другими сервисами ИИ
 
-Образы [Ollama](https://github.com/hwdsl2/docker-ollama), [LiteLLM](https://github.com/hwdsl2/docker-litellm), [Whisper (STT)](https://github.com/hwdsl2/docker-whisper), [Kokoro (TTS)](https://github.com/hwdsl2/docker-kokoro) и [Embeddings](https://github.com/hwdsl2/docker-embeddings) можно объединить для создания полного приватного стека ИИ на вашем сервере — от голосового ввода/вывода до RAG-ответов на вопросы. Whisper, Kokoro и Embeddings работают полностью локально. Ollama выполняет весь инференс LLM локально, данные не отправляются третьим сторонам. При использовании LiteLLM с внешними провайдерами (например, OpenAI, Anthropic) ваши данные будут отправлены этим провайдерам.
+Образы [Ollama](https://github.com/hwdsl2/docker-ollama/blob/main/README-ru.md), [LiteLLM](https://github.com/hwdsl2/docker-litellm/blob/main/README-ru.md), [Whisper (STT)](https://github.com/hwdsl2/docker-whisper/blob/main/README-ru.md), [Kokoro (TTS)](https://github.com/hwdsl2/docker-kokoro/blob/main/README-ru.md), [Embeddings](https://github.com/hwdsl2/docker-embeddings/blob/main/README-ru.md) и [MCP-шлюз](https://github.com/hwdsl2/docker-mcp-gateway/blob/main/README-ru.md) можно объединить для создания полного приватного стека ИИ на вашем сервере — от голосового ввода/вывода до RAG-ответов на вопросы. Whisper, Kokoro и Embeddings работают полностью локально. Ollama выполняет весь инференс LLM локально, данные не отправляются третьим сторонам. При использовании LiteLLM с внешними провайдерами (например, OpenAI, Anthropic) ваши данные будут отправлены этим провайдерам.
 
 ```mermaid
 graph LR
@@ -417,6 +418,7 @@ graph LR
 | **[Embeddings](https://github.com/hwdsl2/docker-embeddings)** | Преобразует текст в векторы для семантического поиска и RAG | `8000` |
 | **[Whisper (распознавание речи)](https://github.com/hwdsl2/docker-whisper)** | Транскрибирует речь в текст | `9000` |
 | **[Kokoro (синтез речи)](https://github.com/hwdsl2/docker-kokoro)** | Преобразует текст в естественную речь | `8880` |
+| **[MCP-шлюз](https://github.com/hwdsl2/docker-mcp-gateway/blob/main/README-ru.md)** | Предоставляет сервисы ИИ как MCP-инструменты для ИИ-ассистентов (Claude, Cursor и др.) | `3000` |
 
 **Подключение Ollama к LiteLLM:**
 
@@ -492,7 +494,7 @@ curl -s http://localhost:4000/v1/chat/completions \
 <details>
 <summary><strong>Пример docker-compose для полного стека</strong></summary>
 
-Разверните все сервисы одной командой. LiteLLM подключается к Ollama внутри общей сети Docker — установите `LITELLM_OLLAMA_BASE_URL=http://ollama:11434` в `litellm.env`.
+Разверните все сервисы одной командой. Настройка не требуется — все сервисы автоматически конфигурируются с безопасными значениями по умолчанию при первом запуске.
 
 **Требования к ресурсам:** Для одновременной работы всех сервисов требуется не менее 8 ГБ ОЗУ (с небольшими моделями). Для крупных моделей LLM (8B+) рекомендуется 32 ГБ и более. Вы можете закомментировать ненужные сервисы для экономии памяти.
 
@@ -506,7 +508,7 @@ services:
     #   - "11434:11434/tcp"  # Раскомментируйте для прямого доступа к Ollama
     volumes:
       - ollama-data:/var/lib/ollama
-      - ./ollama.env:/ollama.env:ro
+      # - ./ollama.env:/ollama.env:ro  # optional: custom config
 
   litellm:
     image: hwdsl2/litellm-server
@@ -514,9 +516,11 @@ services:
     restart: always
     ports:
       - "4000:4000/tcp"
+    environment:
+      - LITELLM_OLLAMA_BASE_URL=http://ollama:11434
     volumes:
       - litellm-data:/etc/litellm
-      - ./litellm.env:/litellm.env:ro
+      # - ./litellm.env:/litellm.env:ro  # optional: custom config
 
   embeddings:
     image: hwdsl2/embeddings-server
@@ -526,7 +530,7 @@ services:
       - "8000:8000/tcp"
     volumes:
       - embeddings-data:/var/lib/embeddings
-      - ./embed.env:/embed.env:ro
+      # - ./embed.env:/embed.env:ro  # optional: custom config
 
   whisper:
     image: hwdsl2/whisper-server
@@ -536,7 +540,7 @@ services:
       - "9000:9000/tcp"
     volumes:
       - whisper-data:/var/lib/whisper
-      - ./whisper.env:/whisper.env:ro
+      # - ./whisper.env:/whisper.env:ro  # optional: custom config
 
   kokoro:
     image: hwdsl2/kokoro-server
@@ -546,7 +550,17 @@ services:
       - "8880:8880/tcp"
     volumes:
       - kokoro-data:/var/lib/kokoro
-      - ./kokoro.env:/kokoro.env:ro
+      # - ./kokoro.env:/kokoro.env:ro  # optional: custom config
+
+  mcp:
+    image: hwdsl2/mcp-gateway
+    container_name: mcp
+    restart: always
+    ports:
+      - "3000:3000/tcp"
+    volumes:
+      - mcp-data:/var/lib/mcp
+      # - ./mcp.env:/mcp.env:ro  # optional: custom config
 
 volumes:
   ollama-data:
@@ -554,6 +568,7 @@ volumes:
   embeddings-data:
   whisper-data:
   kokoro-data:
+  mcp-data:
 ```
 
 Для ускорения на NVIDIA GPU измените теги образов на `:cuda` для ollama, whisper и kokoro, и добавьте следующее к каждому из этих сервисов:

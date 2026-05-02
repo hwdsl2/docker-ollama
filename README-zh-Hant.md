@@ -23,8 +23,9 @@
 
 - AI/音訊：[Whisper (STT)](https://github.com/hwdsl2/docker-whisper/blob/main/README-zh-Hant.md)、[Kokoro (TTS)](https://github.com/hwdsl2/docker-kokoro/blob/main/README-zh-Hant.md)、[Embeddings](https://github.com/hwdsl2/docker-embeddings/blob/main/README-zh-Hant.md)、[LiteLLM](https://github.com/hwdsl2/docker-litellm/blob/main/README-zh-Hant.md)
 - VPN：[WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-zh-Hant.md)、[OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-zh-Hant.md)、[IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-zh-Hant.md)、[Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/README-zh-Hant.md)
+- 工具：[MCP Gateway](https://github.com/hwdsl2/docker-mcp-gateway/blob/main/README-zh-Hant.md)
 
-**提示：** Ollama、LiteLLM、Whisper、Kokoro 和 Embeddings 可以[協同使用](#與其他-ai-服務配合使用)，在您自己的伺服器上建置完整的私有 AI 技術堆疊。
+**提示：** Ollama、LiteLLM、Whisper、Kokoro、Embeddings 和 MCP 閘道可以[協同使用](#與其他-ai-服務配合使用)，在您自己的伺服器上建置完整的私有 AI 技術堆疊。
 
 ## 安全說明
 
@@ -395,7 +396,7 @@ docker rm -f ollama
 
 ## 與其他 AI 服務配合使用
 
-[Ollama](https://github.com/hwdsl2/docker-ollama)、[LiteLLM](https://github.com/hwdsl2/docker-litellm)、[Whisper (STT)](https://github.com/hwdsl2/docker-whisper)、[Kokoro (TTS)](https://github.com/hwdsl2/docker-kokoro) 和 [Embeddings](https://github.com/hwdsl2/docker-embeddings) 映像可以組合在一起，在您自己的伺服器上建置完整的私有 AI 技術堆疊——從語音輸入/輸出到 RAG 問答。Whisper、Kokoro 和 Embeddings 完全在本地執行。Ollama 在本地執行所有 LLM 推論，無需向第三方傳送資料。使用 LiteLLM 接入外部提供商（如 OpenAI、Anthropic）時，您的資料將傳送給這些提供商。
+[Ollama](https://github.com/hwdsl2/docker-ollama/blob/main/README-zh-Hant.md)、[LiteLLM](https://github.com/hwdsl2/docker-litellm/blob/main/README-zh-Hant.md)、[Whisper (STT)](https://github.com/hwdsl2/docker-whisper/blob/main/README-zh-Hant.md)、[Kokoro (TTS)](https://github.com/hwdsl2/docker-kokoro/blob/main/README-zh-Hant.md)、[Embeddings](https://github.com/hwdsl2/docker-embeddings/blob/main/README-zh-Hant.md) 和 [MCP 閘道](https://github.com/hwdsl2/docker-mcp-gateway/blob/main/README-zh-Hant.md) 映像可以組合使用，在您自己的伺服器上建置完整的私有 AI 技術堆疊——從語音輸入/輸出到 RAG 問答。Whisper、Kokoro 和 Embeddings 完全在本地執行。Ollama 在本地執行所有 LLM 推論，無需向第三方傳送資料。使用 LiteLLM 接入外部提供商（如 OpenAI、Anthropic）時，您的資料將傳送給這些提供商。
 
 ```mermaid
 graph LR
@@ -417,6 +418,7 @@ graph LR
 | **[Embeddings](https://github.com/hwdsl2/docker-embeddings)** | 將文字轉換為向量，用於語意搜尋和 RAG | `8000` |
 | **[Whisper（語音轉文字）](https://github.com/hwdsl2/docker-whisper)** | 將語音音訊轉錄為文字 | `9000` |
 | **[Kokoro（文字轉語音）](https://github.com/hwdsl2/docker-kokoro)** | 將文字轉換為自然語音 | `8880` |
+| **[MCP 閘道](https://github.com/hwdsl2/docker-mcp-gateway/blob/main/README-zh-Hant.md)** | 將 AI 服務作為 MCP 工具提供給 AI 助手（Claude、Cursor 等） | `3000` |
 
 **將 Ollama 連接到 LiteLLM：**
 
@@ -492,7 +494,7 @@ curl -s http://localhost:4000/v1/chat/completions \
 <details>
 <summary><strong>完整技術堆疊 docker-compose 範例</strong></summary>
 
-使用一條命令部署所有服務。LiteLLM 透過共享 Docker 網路內部連接到 Ollama — 在 `litellm.env` 中設置 `LITELLM_OLLAMA_BASE_URL=http://ollama:11434`。
+使用一條命令部署所有服務。無需任何設定——所有服務在首次啟動時自動進行安全設定。
 
 **資源需求：** 同時運行所有服務至少需要 8 GB 記憶體（使用小型模型）。對於較大的 LLM 模型（8B+），建議 32 GB 或更多。您可以註解掉不需要的服務以減少記憶體使用。
 
@@ -506,7 +508,7 @@ services:
     #   - "11434:11434/tcp"  # 取消註解以直接存取 Ollama
     volumes:
       - ollama-data:/var/lib/ollama
-      - ./ollama.env:/ollama.env:ro
+      # - ./ollama.env:/ollama.env:ro  # optional: custom config
 
   litellm:
     image: hwdsl2/litellm-server
@@ -514,9 +516,11 @@ services:
     restart: always
     ports:
       - "4000:4000/tcp"
+    environment:
+      - LITELLM_OLLAMA_BASE_URL=http://ollama:11434
     volumes:
       - litellm-data:/etc/litellm
-      - ./litellm.env:/litellm.env:ro
+      # - ./litellm.env:/litellm.env:ro  # optional: custom config
 
   embeddings:
     image: hwdsl2/embeddings-server
@@ -526,7 +530,7 @@ services:
       - "8000:8000/tcp"
     volumes:
       - embeddings-data:/var/lib/embeddings
-      - ./embed.env:/embed.env:ro
+      # - ./embed.env:/embed.env:ro  # optional: custom config
 
   whisper:
     image: hwdsl2/whisper-server
@@ -536,7 +540,7 @@ services:
       - "9000:9000/tcp"
     volumes:
       - whisper-data:/var/lib/whisper
-      - ./whisper.env:/whisper.env:ro
+      # - ./whisper.env:/whisper.env:ro  # optional: custom config
 
   kokoro:
     image: hwdsl2/kokoro-server
@@ -546,7 +550,17 @@ services:
       - "8880:8880/tcp"
     volumes:
       - kokoro-data:/var/lib/kokoro
-      - ./kokoro.env:/kokoro.env:ro
+      # - ./kokoro.env:/kokoro.env:ro  # optional: custom config
+
+  mcp:
+    image: hwdsl2/mcp-gateway
+    container_name: mcp
+    restart: always
+    ports:
+      - "3000:3000/tcp"
+    volumes:
+      - mcp-data:/var/lib/mcp
+      # - ./mcp.env:/mcp.env:ro  # optional: custom config
 
 volumes:
   ollama-data:
@@ -554,6 +568,7 @@ volumes:
   embeddings-data:
   whisper-data:
   kokoro-data:
+  mcp-data:
 ```
 
 如需 NVIDIA GPU 加速，將 ollama、whisper 和 kokoro 的映像標籤改為 `:cuda`，並為這些服務添加以下配置：
