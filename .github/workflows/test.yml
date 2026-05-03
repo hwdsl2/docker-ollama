@@ -1,0 +1,15 @@
+name: test
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/test.yml'
+      - '.github/workflows/shellcheck.yml'
+      - '.github/workflows/ollama_test.yml'
+
+jobs:
+  shellcheck:
+    if: github.repository_owner == 'hwdsl2'
+    uses: ./.github/workflows/shellcheck.yml
