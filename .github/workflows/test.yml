@@ -13,3 +13,7 @@ jobs:
   shellcheck:
     if: github.repository_owner == 'hwdsl2'
     uses: ./.github/workflows/shellcheck.yml
+
+  ollama_test:
+    if: github.repository_owner == 'hwdsl2'
+    uses: ./.github/workflows/ollama_test.yml

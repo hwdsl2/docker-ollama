@@ -1,0 +1,147 @@
+name: ollama_test
+
+on: workflow_call
+
+jobs:
+  ollama_test:
+    runs-on: ubuntu-24.04
+    if: github.repository_owner == 'hwdsl2'
+    strategy:
+      matrix:
+        test_id: [no-env, with-env]
+      fail-fast: false
+    env:
+      TEST_ID: ${{ matrix.test_id }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Test
+        run: |
+          [ ! -x /usr/bin/docker ] && exit 1
+
+          cd "$GITHUB_WORKSPACE"
+          pwd
+          ls -ld ollama.env.example
+
+          set -x
+
+          docker build -t ollama-test .
+
+          if [ "$TEST_ID" = "with-env" ]; then
+            docker run \
+              --name "$TEST_ID" \
+              --restart=always \
+              -v ollama-test-data:/var/lib/ollama \
+              -v ./ollama.env.example:/ollama.env:ro \
+              -p 11434:11434/tcp \
+              -d ollama-test
+          elif [ "$TEST_ID" = "no-env" ]; then
+            docker run \
+              --name "$TEST_ID" \
+              --restart=always \
+              -v ollama-test-data:/var/lib/ollama \
+              -p 11434:11434/tcp \
+              -d ollama-test
+          fi
+
+          # Wait for server to be ready (up to 120 seconds)
+          i=0
+          while [ "$i" -lt 120 ]; do
+            if curl -sf http://127.0.0.1:11434/ >/dev/null 2>&1; then
+              break
+            fi
+            sleep 1
+            i=$((i + 1))
+          done
+
+          docker ps | grep "$TEST_ID"
+          docker logs "$TEST_ID"
+
+          # Verify root endpoint is accessible without auth
+          curl -sf http://127.0.0.1:11434/
+
+          # Get API key (auto-generated)
+          API_KEY=$(docker exec "$TEST_ID" cat /var/lib/ollama/.api_key)
+          [ -n "$API_KEY" ] || { echo "API key not found"; exit 1; }
+
+          # Verify auth is enforced on /api/tags (requires Bearer token)
+          http_code=$(curl -s -o /dev/null -w '%{http_code}' \
+            http://127.0.0.1:11434/api/tags 2>/dev/null || true)
+          [ "$http_code" = "401" ] || { echo "Expected 401 without key, got $http_code"; exit 1; }
+
+          # Verify /api/tags is accessible with API key
+          curl -sf http://127.0.0.1:11434/api/tags \
+            -H "Authorization: Bearer $API_KEY" \
+            | grep -q '"models"'
+
+          # Verify /v1/models is accessible with API key
+          curl -sf http://127.0.0.1:11434/v1/models \
+            -H "Authorization: Bearer $API_KEY" \
+            | grep -q '"object"'
+
+          # Test ollama_manage commands
+          docker exec "$TEST_ID" ollama_manage --listmodels
+
+          # Pull a small model (smollm2:135m ~270 MB) for functional tests
+          docker exec "$TEST_ID" ollama_manage --pull smollm2:135m
+
+          # Verify model appears in /api/tags after pull
+          curl -sf http://127.0.0.1:11434/api/tags \
+            -H "Authorization: Bearer $API_KEY" \
+            | grep -q 'smollm2'
+
+          # Test /api/generate endpoint
+          curl -sf http://127.0.0.1:11434/api/generate \
+            -H "Authorization: Bearer $API_KEY" \
+            -H "Content-Type: application/json" \
+            -d '{"model":"smollm2:135m","prompt":"Hi","stream":false}' \
+            | grep -q '"response"'
+
+          # Test OpenAI-compatible /v1/chat/completions endpoint
+          curl -sf http://127.0.0.1:11434/v1/chat/completions \
+            -H "Authorization: Bearer $API_KEY" \
+            -H "Content-Type: application/json" \
+            -d '{"model":"smollm2:135m","messages":[{"role":"user","content":"Hi"}],"stream":false}' \
+            | grep -q '"choices"'
+
+          # Remove the test model
+          docker exec "$TEST_ID" ollama_manage --remove smollm2:135m
+
+          # Verify model no longer appears in /api/tags
+          tags_output=$(curl -sf http://127.0.0.1:11434/api/tags \
+            -H "Authorization: Bearer $API_KEY")
+          echo "$tags_output" | grep -q 'smollm2' \
+            && { echo "Model still present after removal"; exit 1; } || true
+
+          docker restart "$TEST_ID"
+
+          sleep 10
+
+          # Wait for server to come back (up to 120 seconds)
+          i=0
+          while [ "$i" -lt 120 ]; do
+            if curl -sf http://127.0.0.1:11434/ >/dev/null 2>&1; then
+              break
+            fi
+            sleep 1
+            i=$((i + 1))
+          done
+
+          docker ps | grep "$TEST_ID"
+          docker logs "$TEST_ID"
+
+          # Verify server is accessible after restart
+          curl -sf http://127.0.0.1:11434/
+
+          # Verify API key persisted across restart
+          API_KEY2=$(docker exec "$TEST_ID" cat /var/lib/ollama/.api_key)
+          [ "$API_KEY" = "$API_KEY2" ] || { echo "API key changed after restart"; exit 1; }
+
+          exit 0
+      - name: Clear
+        if: always()
+        run: |
+          docker rm -f "$TEST_ID" || true
+          docker volume rm ollama-test-data || true
+          docker rmi ollama-test || true
