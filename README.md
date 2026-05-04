@@ -46,7 +46,7 @@ docker run \
 
 On first start, an API key is auto-generated and displayed in the container logs. All API requests require this key.
 
-**Note:** For internet-facing deployments with HTTPS, see [Using a reverse proxy](#using-a-reverse-proxy).
+**Note:** For internet-facing deployments, using a [reverse proxy](#using-a-reverse-proxy) to add HTTPS is **strongly recommended**. In that case, also replace `-p 11434:11434/tcp` with `-p 127.0.0.1:11434:11434/tcp` in the `docker run` command above, to prevent direct access to the unencrypted port.
 
 **Step 2.** Get the API key:
 
@@ -330,6 +330,8 @@ volumes:
   ollama-data:
 ```
 
+**Note:** For internet-facing deployments, using a [reverse proxy](#using-a-reverse-proxy) to add HTTPS is **strongly recommended**. In that case, also change `"11434:11434/tcp"` to `"127.0.0.1:11434:11434/tcp"` in `docker-compose.yml`, to prevent direct access to the unencrypted port.
+
 ### GPU acceleration (CUDA)
 
 Use `docker-compose.cuda.yml` to run with NVIDIA GPU support:
@@ -342,14 +344,16 @@ docker compose -f docker-compose.cuda.yml up -d
 
 ## Using a reverse proxy
 
-For internet-facing deployments, put a reverse proxy in front to handle HTTPS. The built-in Caddy auth proxy handles authentication; the external reverse proxy adds TLS. Use one of the following addresses to reach the Ollama container:
+For internet-facing deployments, place a reverse proxy in front of Ollama to handle HTTPS termination. The server works without HTTPS on a local or trusted network, but HTTPS is recommended when the API endpoint is exposed to the internet.
 
-- **`ollama:11434`** — if your reverse proxy runs as a container in the same Docker network.
-- **`127.0.0.1:11434`** — if your reverse proxy runs on the host and the port is published.
+Use one of the following addresses to reach the Ollama container from your reverse proxy:
+
+- **`ollama:11434`** — if your reverse proxy runs as a container in the **same Docker network** as Ollama (e.g. defined in the same `docker-compose.yml`).
+- **`127.0.0.1:11434`** — if your reverse proxy runs **on the host** and port `11434` is published (the default `docker-compose.yml` publishes it).
 
 **Note:** The `Authorization: Bearer` header passes through reverse proxies automatically — no special configuration needed.
 
-**Example with [Caddy](https://caddyserver.com/docs/) (automatic TLS via Let's Encrypt):**
+**Example with [Caddy](https://caddyserver.com/docs/) ([Docker image](https://hub.docker.com/_/caddy))** (automatic TLS via Let's Encrypt, reverse proxy in the same Docker network):
 
 `Caddyfile`:
 ```
@@ -358,25 +362,26 @@ ollama.example.com {
 }
 ```
 
-**Example with nginx (reverse proxy on the host):**
+**Example with nginx** (reverse proxy on the host):
 
 ```nginx
 server {
-  listen 443 ssl;
-  server_name ollama.example.com;
+    listen 443 ssl;
+    server_name ollama.example.com;
 
-  ssl_certificate     /path/to/cert.pem;
-  ssl_certificate_key /path/to/key.pem;
+    ssl_certificate     /path/to/cert.pem;
+    ssl_certificate_key /path/to/key.pem;
 
-  location / {
-    proxy_pass http://127.0.0.1:11434;
-    proxy_set_header Host $host;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto $scheme;
-    proxy_read_timeout 300s;
-    proxy_buffering off;
-  }
+    location / {
+        proxy_pass         http://127.0.0.1:11434;
+        proxy_set_header   Host $host;
+        proxy_set_header   X-Real-IP $remote_addr;
+        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Proto $scheme;
+        proxy_http_version 1.1;       # required for streaming responses
+        proxy_read_timeout 300s;
+        proxy_buffering    off;
+    }
 }
 ```
 

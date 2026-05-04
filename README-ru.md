@@ -46,7 +46,7 @@ docker run \
 
 При первом запуске автоматически генерируется API-ключ, который отображается в логах контейнера. Все API-запросы требуют этот ключ.
 
-**Примечание:** Для развёртывания с HTTPS см. раздел [Использование обратного прокси](#использование-обратного-прокси).
+**Примечание:** Для развёртывания с доступом из интернета настоятельно **рекомендуется** использовать [обратный прокси](#использование-обратного-прокси) для добавления HTTPS. В этом случае также замените `-p 11434:11434/tcp` на `-p 127.0.0.1:11434:11434/tcp` в команде `docker run` выше, чтобы предотвратить прямой доступ к незашифрованному порту.
 
 **Шаг 2.** Получите API-ключ:
 
@@ -330,6 +330,8 @@ volumes:
   ollama-data:
 ```
 
+**Примечание:** Для развёртывания с доступом из интернета настоятельно **рекомендуется** использовать [обратный прокси](#использование-обратного-прокси) для добавления HTTPS. В этом случае также замените `"11434:11434/tcp"` на `"127.0.0.1:11434:11434/tcp"` в файле `docker-compose.yml`, чтобы предотвратить прямой доступ к незашифрованному порту.
+
 ### GPU-ускорение (CUDA)
 
 Используйте `docker-compose.cuda.yml` для запуска с поддержкой NVIDIA GPU:
@@ -342,14 +344,16 @@ docker compose -f docker-compose.cuda.yml up -d
 
 ## Использование обратного прокси
 
-Для развёртывания с доступом из интернета установите обратный прокси для обработки HTTPS. Встроенный прокси аутентификации Caddy обеспечивает аутентификацию; внешний обратный прокси добавляет TLS. Используйте один из следующих адресов для доступа к контейнеру Ollama:
+Для развёртывания с выходом в интернет разместите обратный прокси перед Ollama для обработки HTTPS-терминации. Сервер работает без HTTPS в локальной или доверенной сети, но HTTPS рекомендуется при открытом доступе к API-эндпоинту из интернета.
 
-- **`ollama:11434`** — если обратный прокси работает как контейнер в той же Docker-сети
-- **`127.0.0.1:11434`** — если обратный прокси работает на хосте и порт опубликован
+Используйте один из следующих адресов для доступа к контейнеру Ollama из обратного прокси:
+
+- **`ollama:11434`** — если ваш обратный прокси работает как контейнер в **той же Docker-сети**, что и Ollama (например, определён в том же `docker-compose.yml`).
+- **`127.0.0.1:11434`** — если ваш обратный прокси работает **на хосте** и порт `11434` опубликован (по умолчанию `docker-compose.yml` публикует его).
 
 **Примечание:** Заголовок `Authorization: Bearer` автоматически передаётся через обратные прокси — специальная настройка не требуется.
 
-**Пример с [Caddy](https://caddyserver.com/docs/) (автоматический TLS через Let's Encrypt):**
+**Пример с [Caddy](https://caddyserver.com/docs/) ([Docker-образ](https://hub.docker.com/_/caddy))** (автоматический TLS через Let's Encrypt, обратный прокси в той же Docker-сети):
 
 `Caddyfile`:
 ```
@@ -358,25 +362,26 @@ ollama.example.com {
 }
 ```
 
-**Пример с nginx (обратный прокси на хосте):**
+**Пример с nginx** (обратный прокси на хосте):
 
 ```nginx
 server {
-  listen 443 ssl;
-  server_name ollama.example.com;
+    listen 443 ssl;
+    server_name ollama.example.com;
 
-  ssl_certificate     /path/to/cert.pem;
-  ssl_certificate_key /path/to/key.pem;
+    ssl_certificate     /path/to/cert.pem;
+    ssl_certificate_key /path/to/key.pem;
 
-  location / {
-    proxy_pass http://127.0.0.1:11434;
-    proxy_set_header Host $host;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto $scheme;
-    proxy_read_timeout 300s;
-    proxy_buffering off;
-  }
+    location / {
+        proxy_pass         http://127.0.0.1:11434;
+        proxy_set_header   Host $host;
+        proxy_set_header   X-Real-IP $remote_addr;
+        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Proto $scheme;
+        proxy_http_version 1.1;       # требуется для потоковых ответов
+        proxy_read_timeout 300s;
+        proxy_buffering    off;
+    }
 }
 ```
 

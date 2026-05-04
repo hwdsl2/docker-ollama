@@ -46,7 +46,7 @@ docker run \
 
 首次启动时，系统会自动生成 API 密钥并显示在容器日志中。所有 API 请求均需此密钥。
 
-**注意：** 对于需要 HTTPS 的面向互联网部署，请参阅[使用反向代理](#使用反向代理)。
+**注意：** 对于面向互联网的部署，**强烈建议**使用[反向代理](#使用反向代理)添加 HTTPS。在这种情况下，还需将 `docker run` 命令中的 `-p 11434:11434/tcp` 替换为 `-p 127.0.0.1:11434:11434/tcp`，以防止直接访问未加密的端口。
 
 **第二步。** 获取 API 密钥：
 
@@ -330,6 +330,8 @@ volumes:
   ollama-data:
 ```
 
+**注意：** 对于面向互联网的部署，**强烈建议**使用[反向代理](#使用反向代理)添加 HTTPS。在这种情况下，还需将 `docker-compose.yml` 中的 `"11434:11434/tcp"` 改为 `"127.0.0.1:11434:11434/tcp"`，以防止直接访问未加密的端口。
+
 ### GPU 加速（CUDA）
 
 使用 `docker-compose.cuda.yml` 以 NVIDIA GPU 支持运行：
@@ -342,14 +344,16 @@ docker compose -f docker-compose.cuda.yml up -d
 
 ## 使用反向代理
 
-对于面向互联网的部署，在前面放置反向代理来处理 HTTPS。内置的 Caddy 认证代理处理认证；外部反向代理添加 TLS。使用以下地址之一访问 Ollama 容器：
+如需面向公网部署，可在 Ollama 前置反向代理处理 HTTPS 终止。在本地或可信网络中使用无需 HTTPS，但将 API 端点暴露在公网时建议启用 HTTPS。
 
-- **`ollama:11434`** — 如果反向代理作为容器在同一 Docker 网络中运行
-- **`127.0.0.1:11434`** — 如果反向代理在主机上运行且端口已发布
+从反向代理访问 Ollama 容器时使用以下地址之一：
+
+- **`ollama:11434`** — 如果反向代理作为容器运行在与 Ollama **同一 Docker 网络**中（例如定义在同一 `docker-compose.yml` 中）。
+- **`127.0.0.1:11434`** — 如果反向代理运行在**主机上**且端口 `11434` 已发布（默认 `docker-compose.yml` 会发布该端口）。
 
 **注意：** `Authorization: Bearer` 头会自动通过反向代理传递，无需特殊配置。
 
-**使用 [Caddy](https://caddyserver.com/docs/) 的示例（通过 Let's Encrypt 自动 TLS）：**
+**使用 [Caddy](https://caddyserver.com/docs/)（[Docker 镜像](https://hub.docker.com/_/caddy)）的示例**（自动 Let's Encrypt TLS，反向代理在同一 Docker 网络中）：
 
 `Caddyfile`：
 ```
@@ -358,25 +362,26 @@ ollama.example.com {
 }
 ```
 
-**使用 nginx 的示例（主机上的反向代理）：**
+**使用 nginx 的示例**（反向代理运行在主机上）：
 
 ```nginx
 server {
-  listen 443 ssl;
-  server_name ollama.example.com;
+    listen 443 ssl;
+    server_name ollama.example.com;
 
-  ssl_certificate     /path/to/cert.pem;
-  ssl_certificate_key /path/to/key.pem;
+    ssl_certificate     /path/to/cert.pem;
+    ssl_certificate_key /path/to/key.pem;
 
-  location / {
-    proxy_pass http://127.0.0.1:11434;
-    proxy_set_header Host $host;
-    proxy_set_header X-Real-IP $remote_addr;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto $scheme;
-    proxy_read_timeout 300s;
-    proxy_buffering off;
-  }
+    location / {
+        proxy_pass         http://127.0.0.1:11434;
+        proxy_set_header   Host $host;
+        proxy_set_header   X-Real-IP $remote_addr;
+        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Proto $scheme;
+        proxy_http_version 1.1;       # 流式响应所需
+        proxy_read_timeout 300s;
+        proxy_buffering    off;
+    }
 }
 ```
 
