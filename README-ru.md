@@ -321,13 +321,14 @@ services:
     container_name: ollama
     restart: always
     ports:
-      - "11434:11434/tcp"
+      - "11434:11434/tcp"  # For a host-based reverse proxy, change to "127.0.0.1:11434:11434/tcp"
     volumes:
       - ollama-data:/var/lib/ollama
       - ./ollama.env:/ollama.env:ro
 
 volumes:
   ollama-data:
+    name: ollama-data
 ```
 
 **Примечание:** Для развёртывания с доступом из интернета настоятельно **рекомендуется** использовать [обратный прокси](#использование-обратного-прокси) для добавления HTTPS. В этом случае также замените `"11434:11434/tcp"` на `"127.0.0.1:11434:11434/tcp"` в файле `docker-compose.yml`, чтобы предотвратить прямой доступ к незашифрованному порту.

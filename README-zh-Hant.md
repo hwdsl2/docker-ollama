@@ -321,13 +321,14 @@ services:
     container_name: ollama
     restart: always
     ports:
-      - "11434:11434/tcp"
+      - "11434:11434/tcp"  # For a host-based reverse proxy, change to "127.0.0.1:11434:11434/tcp"
     volumes:
       - ollama-data:/var/lib/ollama
       - ./ollama.env:/ollama.env:ro
 
 volumes:
   ollama-data:
+    name: ollama-data
 ```
 
 **注意：** 對於面向網際網路的部署，**強烈建議**使用[反向代理](#使用反向代理)新增 HTTPS。在這種情況下，還需將 `docker-compose.yml` 中的 `"11434:11434/tcp"` 改為 `"127.0.0.1:11434:11434/tcp"`，以防止直接存取未加密的連接埠。
