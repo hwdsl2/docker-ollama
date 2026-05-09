@@ -4,7 +4,7 @@ services:
     container_name: ollama
     restart: always
     ports:
-      - "11434:11434/tcp"
+      - "11434:11434/tcp"  # For a host-based reverse proxy, change to "127.0.0.1:11434:11434/tcp"
     volumes:
       - ollama-data:/var/lib/ollama
       - ./ollama.env:/ollama.env:ro
@@ -18,3 +18,4 @@ services:
 
 volumes:
   ollama-data:
+    name: ollama-data
