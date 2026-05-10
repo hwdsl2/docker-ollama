@@ -243,7 +243,9 @@ cat > "$CADDY_CONFIG_FILE" << CADDYEOF
     not path /
   }
   respond @unauthed "Unauthorized" 401
-  reverse_proxy 127.0.0.1:${OLLAMA_INTERNAL_PORT}
+  reverse_proxy 127.0.0.1:${OLLAMA_INTERNAL_PORT} {
+    header_up Host 127.0.0.1:${OLLAMA_INTERNAL_PORT}
+  }
 }
 CADDYEOF
 caddy fmt --overwrite "$CADDY_CONFIG_FILE" 2>/dev/null || true
