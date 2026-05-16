@@ -299,7 +299,6 @@ All server data is stored in the Docker volume (`/var/lib/ollama` inside the con
 ├── .api_key          # API key (auto-generated, or synced from OLLAMA_API_KEY)
 ├── .initialized      # First-run marker
 ├── .port             # Saved port (used by ollama_manage)
-├── .server_addr      # Cached server address (used by ollama_manage --showkey)
 └── .Caddyfile        # Generated Caddy config (auth proxy)
 ```
 

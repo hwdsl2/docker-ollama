@@ -299,7 +299,6 @@ print(response.choices[0].message.content)
 ├── .api_key          # API 密钥（自动生成，或从 OLLAMA_API_KEY 同步）
 ├── .initialized      # 首次运行标记
 ├── .port             # 保存的端口（供 ollama_manage 使用）
-├── .server_addr      # 缓存的服务器地址（供 ollama_manage --showkey 使用）
 └── .Caddyfile        # 生成的 Caddy 配置（认证代理）
 ```
 

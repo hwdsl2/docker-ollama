@@ -299,7 +299,6 @@ print(response.choices[0].message.content)
 ├── .api_key          # API-ключ (автогенерируется или синхронизируется из OLLAMA_API_KEY)
 ├── .initialized      # Маркер первого запуска
 ├── .port             # Сохранённый порт (используется ollama_manage)
-├── .server_addr      # Кэшированный адрес сервера (используется ollama_manage --showkey)
 └── .Caddyfile        # Сгенерированная конфигурация Caddy (прокси аутентификации)
 ```
 
