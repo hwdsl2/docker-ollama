@@ -12,7 +12,6 @@ export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 OLLAMA_DATA="/var/lib/ollama"
 API_KEY_FILE="${OLLAMA_DATA}/.api_key"
 PORT_FILE="${OLLAMA_DATA}/.port"
-SERVER_ADDR_FILE="${OLLAMA_DATA}/.server_addr"
 
 exiterr() { echo "Error: $1" >&2; exit 1; }
 
@@ -74,12 +73,6 @@ load_config() {
     if [ -f "$API_KEY_FILE" ]; then
       OLLAMA_API_KEY=$(cat "$API_KEY_FILE")
     fi
-  fi
-
-  if [ -f "$SERVER_ADDR_FILE" ]; then
-    SERVER_ADDR=$(cat "$SERVER_ADDR_FILE")
-  else
-    SERVER_ADDR="<server ip>"
   fi
 
   # ollama_manage communicates with ollama serve directly on localhost
@@ -260,7 +253,7 @@ do_show_key() {
   echo " ${OLLAMA_API_KEY}"
   echo "==========================================================="
   echo
-  echo "API endpoint:  http://${SERVER_ADDR}:${OLLAMA_PORT}"
+  echo "API endpoint:  http://<server-ip>:${OLLAMA_PORT}"
   echo
 }
 

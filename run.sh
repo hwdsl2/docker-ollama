@@ -99,7 +99,6 @@ chmod 700 /var/lib/ollama
 
 API_KEY_FILE="/var/lib/ollama/.api_key"
 PORT_FILE="/var/lib/ollama/.port"
-SERVER_ADDR_FILE="/var/lib/ollama/.server_addr"
 INITIALIZED_MARKER="/var/lib/ollama/.initialized"
 
 # Generate or load API key
@@ -132,7 +131,6 @@ else
     server_addr="<server ip>"
   fi
 fi
-printf '%s' "$server_addr" > "$SERVER_ADDR_FILE"
 
 echo
 echo "Ollama Docker - https://github.com/hwdsl2/docker-ollama"
@@ -157,7 +155,7 @@ fi
 
 # Build Ollama environment
 # Note: OLLAMA_HOST is Ollama's env var for the bind address of ollama serve.
-# We save the user-set OLLAMA_HOST (display hostname) to server_addr above, then
+# We store the user-set OLLAMA_HOST (display hostname) in server_addr above, then
 # overwrite OLLAMA_HOST here so ollama serve and the ollama CLI both use localhost.
 export OLLAMA_HOST="127.0.0.1:${OLLAMA_INTERNAL_PORT}"
 export OLLAMA_MODELS="/var/lib/ollama/models"
