@@ -270,9 +270,9 @@ fi
 # Display connection info
 echo
 echo "==========================================================="
-echo " Ollama API key"
+echo "Ollama API key"
 echo "==========================================================="
-echo " ${api_key}"
+echo "${api_key}"
 echo "==========================================================="
 echo
 echo "API endpoint: http://${server_addr}:${OLLAMA_PORT}"

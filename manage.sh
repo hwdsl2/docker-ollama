@@ -248,9 +248,9 @@ do_show_key() {
     return
   fi
   echo "==========================================================="
-  echo " Ollama API key"
+  echo "Ollama API key"
   echo "==========================================================="
-  echo " ${OLLAMA_API_KEY}"
+  echo "${OLLAMA_API_KEY}"
   echo "==========================================================="
   echo
   echo "API endpoint:  http://<server-ip>:${OLLAMA_PORT}"
