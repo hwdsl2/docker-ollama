@@ -29,6 +29,10 @@
 
 **提示：** Ollama、LiteLLM、Whisper、Kokoro、Embeddings、Docling 和 MCP 閘道可以[協同使用](#與其他-ai-服務搭配使用)，在您自己的伺服器上建置完整的自託管 AI 技術堆疊。
 
+## 社群
+
+- 討論與展示：[r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/)
+
 ## 安全說明
 
 約 175,000 台 Ollama 伺服器被發現在未經驗證的情況下公開暴露（[來源](https://www.sentinelone.com/labs/silent-brothers-ollama-hosts-form-anonymous-ai-network-beyond-platform-guardrails/)）。裸裝的 Ollama 預設綁定到所有介面且無驗證。本映像透過內建驗證代理對**所有 API 請求強制執行 Bearer Token 驗證**，即使連接埠意外暴露，未授權存取也會被阻止。

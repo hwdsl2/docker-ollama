@@ -29,6 +29,10 @@ Docker image to run an [Ollama](https://github.com/ollama/ollama) local LLM serv
 
 **Tip:** Ollama, LiteLLM, Whisper, Kokoro, Embeddings, Docling, and MCP Gateway can be [used together](#using-with-other-ai-services) to build a complete, self-hosted AI stack on your own server.
 
+## Community
+
+- Discussions and showcases: [r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/)
+
 ## Security note
 
 ~175,000 Ollama servers were found publicly exposed without authentication ([source](https://www.sentinelone.com/labs/silent-brothers-ollama-hosts-form-anonymous-ai-network-beyond-platform-guardrails/)). A bare Ollama install binds to all interfaces with no auth by default. This image enforces **Bearer token authentication on all API requests** via a built-in auth proxy, so unauthorized access is blocked even if the port is accidentally exposed.
