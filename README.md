@@ -31,7 +31,7 @@ Docker image to run an [Ollama](https://github.com/ollama/ollama) local LLM serv
 
 ## Community
 
-- Subscribe for project updates: [Self-Hosted Stack](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=ai)
+- Subscribe for project updates (1–2 emails/month): [Self-Hosted Stack](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=ai)
 - Community discussions and showcases: [r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/)
 
 ## Security note
