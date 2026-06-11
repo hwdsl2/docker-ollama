@@ -23,9 +23,8 @@ Docker-образ для запуска локального LLM-сервера 
 
 **Также доступно:**
 
-- ИИ/Аудио: [Whisper (STT)](https://github.com/hwdsl2/docker-whisper/blob/main/README-ru.md), [Kokoro (TTS)](https://github.com/hwdsl2/docker-kokoro/blob/main/README-ru.md), [Embeddings](https://github.com/hwdsl2/docker-embeddings/blob/main/README-ru.md), [LiteLLM](https://github.com/hwdsl2/docker-litellm/blob/main/README-ru.md), [Docling](https://github.com/hwdsl2/docker-docling/blob/main/README-ru.md)
-- VPN: [WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-ru.md), [OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-ru.md), [IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-ru.md), [Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/README-ru.md)
-- Инструменты: [MCP Gateway](https://github.com/hwdsl2/docker-mcp-gateway/blob/main/README-ru.md)
+- AI-стек: [Docker AI Stack](https://github.com/hwdsl2/docker-ai-stack/blob/main/README-ru.md)
+- Связанные AI-сервисы: [Whisper (STT)](https://github.com/hwdsl2/docker-whisper/blob/main/README-ru.md), [Kokoro (TTS)](https://github.com/hwdsl2/docker-kokoro/blob/main/README-ru.md), [Embeddings](https://github.com/hwdsl2/docker-embeddings/blob/main/README-ru.md), [LiteLLM](https://github.com/hwdsl2/docker-litellm/blob/main/README-ru.md), [Docling](https://github.com/hwdsl2/docker-docling/blob/main/README-ru.md), [MCP Gateway](https://github.com/hwdsl2/docker-mcp-gateway/blob/main/README-ru.md)
 
 **Совет:** Ollama, LiteLLM, Whisper, Kokoro, Embeddings, Docling и MCP-шлюз можно [использовать совместно](#использование-с-другими-ai-сервисами) для создания полного self-hosted стека ИИ на вашем сервере.
 
@@ -34,6 +33,8 @@ Docker-образ для запуска локального LLM-сервера 
 - 📬 [Подписаться на обновления проектов](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=ai-ru) (1–2 письма в месяц) — получить бесплатные руководства по развёртыванию AI и VPN (PDF, на английском)
 - 💬 Присоединяйтесь к сообществу [r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/) для обсуждений и демонстрации проектов
 - ⭐ Поставьте звезду репозиторию, если он оказался вам полезен — это поможет другим пользователям его найти.
+
+Другие проекты для самостоятельного размещения: [Setup IPsec VPN](https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-ru.md), [IPsec VPN на Docker](https://github.com/hwdsl2/docker-ipsec-vpn-server/blob/master/README-ru.md), [WireGuard](https://github.com/hwdsl2/docker-wireguard/blob/main/README-ru.md), [OpenVPN](https://github.com/hwdsl2/docker-openvpn/blob/main/README-ru.md), [Headscale](https://github.com/hwdsl2/docker-headscale/blob/main/README-ru.md).
 
 ## Замечание по безопасности
 
@@ -122,7 +123,7 @@ curl http://localhost:11434/api/chat \
 **Для ускорения на GPU (образ `:cuda`):**
 
 - NVIDIA GPU с поддержкой CUDA
-- [Драйвер NVIDIA](https://www.nvidia.com/en-us/drivers/) установлен на хосте
+- [Драйвер NVIDIA](https://www.nvidia.com/en-us/drivers/) 575.57.08+ (Linux) или 576.57+ (Windows) установлен на хосте
 - Установленный [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html)
 - Образ `:cuda` поддерживает только `linux/amd64`
 
@@ -348,7 +349,7 @@ volumes:
 docker compose -f docker-compose.cuda.yml up -d
 ```
 
-**Требования:** NVIDIA GPU и установленный на хосте [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html). Образ `:cuda` поддерживает только `linux/amd64`.
+**Требования:** NVIDIA GPU, [драйвер NVIDIA](https://www.nvidia.com/en-us/drivers/) 575.57.08+ (Linux) или 576.57+ (Windows), и установленный на хосте [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html). Образ `:cuda` поддерживает только `linux/amd64`.
 
 ## Использование обратного прокси
 
@@ -422,7 +423,7 @@ docker rm -f ollama
 | **[MCP-шлюз](https://github.com/hwdsl2/docker-mcp-gateway/blob/main/README-ru.md)** | Предоставляет сервисы ИИ как MCP-инструменты для ИИ-ассистентов (Claude, Cursor и др.) | `3000` |
 | **[Docling](https://github.com/hwdsl2/docker-docling/blob/main/README-ru.md)** | Конвертирует документы (PDF, DOCX и др.) в структурированный текст/Markdown | `5001` |
 
-**См. также: [Docker AI Stack](https://github.com/hwdsl2/docker-ai-stack)** — разверните полный стек одной командой, с готовыми конфигурациями и примерами конвейеров.
+**См. также: [Docker AI Stack](https://github.com/hwdsl2/docker-ai-stack/blob/main/README-ru.md)** — разверните полный стек одной командой, с готовыми конфигурациями и примерами конвейеров.
 
 **Подключение Ollama к LiteLLM:**
 

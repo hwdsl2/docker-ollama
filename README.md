@@ -23,9 +23,8 @@ Docker image to run an [Ollama](https://github.com/ollama/ollama) local LLM serv
 
 **Also available:**
 
-- AI/Audio: [Whisper (STT)](https://github.com/hwdsl2/docker-whisper), [Kokoro (TTS)](https://github.com/hwdsl2/docker-kokoro), [Embeddings](https://github.com/hwdsl2/docker-embeddings), [LiteLLM](https://github.com/hwdsl2/docker-litellm), [Docling](https://github.com/hwdsl2/docker-docling)
-- VPN: [WireGuard](https://github.com/hwdsl2/docker-wireguard), [OpenVPN](https://github.com/hwdsl2/docker-openvpn), [IPsec VPN](https://github.com/hwdsl2/docker-ipsec-vpn-server), [Headscale](https://github.com/hwdsl2/docker-headscale)
-- Tools: [MCP Gateway](https://github.com/hwdsl2/docker-mcp-gateway)
+- AI stack: [Docker AI Stack](https://github.com/hwdsl2/docker-ai-stack)
+- Related AI services: [Whisper (STT)](https://github.com/hwdsl2/docker-whisper), [Kokoro (TTS)](https://github.com/hwdsl2/docker-kokoro), [Embeddings](https://github.com/hwdsl2/docker-embeddings), [LiteLLM](https://github.com/hwdsl2/docker-litellm), [Docling](https://github.com/hwdsl2/docker-docling), [MCP Gateway](https://github.com/hwdsl2/docker-mcp-gateway)
 
 **Tip:** Ollama, LiteLLM, Whisper, Kokoro, Embeddings, Docling, and MCP Gateway can be [used together](#using-with-other-ai-services) to build a complete, self-hosted AI stack on your own server.
 
@@ -34,6 +33,8 @@ Docker image to run an [Ollama](https://github.com/ollama/ollama) local LLM serv
 - 📬 [Subscribe for project updates](https://selfhostedstack.beehiiv.com/subscribe?utm_campaign=ai) (1–2 emails/month) — get free AI and VPN deployment guides (PDF)
 - 💬 Join the [r/selfhostedstack](https://www.reddit.com/r/selfhostedstack/) community for discussions and showcases
 - ⭐ Star the repository if you find it useful — it helps others discover it
+
+Other self-hosted projects: [Setup IPsec VPN](https://github.com/hwdsl2/setup-ipsec-vpn), [IPsec VPN on Docker](https://github.com/hwdsl2/docker-ipsec-vpn-server), [WireGuard](https://github.com/hwdsl2/docker-wireguard), [OpenVPN](https://github.com/hwdsl2/docker-openvpn), [Headscale](https://github.com/hwdsl2/docker-headscale).
 
 ## Security note
 
@@ -122,7 +123,7 @@ To learn more about how to use this image, read the sections below.
 **For GPU acceleration (`:cuda` image):**
 
 - NVIDIA GPU with CUDA support
-- [NVIDIA driver](https://www.nvidia.com/en-us/drivers/) installed on the host
+- [NVIDIA driver](https://www.nvidia.com/en-us/drivers/) 575.57.08+ (Linux) or 576.57+ (Windows) installed on the host
 - [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) installed
 - The `:cuda` image supports `linux/amd64` only
 
@@ -348,7 +349,7 @@ Use `docker-compose.cuda.yml` to run with NVIDIA GPU support:
 docker compose -f docker-compose.cuda.yml up -d
 ```
 
-**Requirements:** NVIDIA GPU and the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) installed on the host. The `:cuda` image is `linux/amd64` only.
+**Requirements:** NVIDIA GPU, [NVIDIA driver](https://www.nvidia.com/en-us/drivers/) 575.57.08+ (Linux) or 576.57+ (Windows), and the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) installed on the host. The `:cuda` image is `linux/amd64` only.
 
 ## Using a reverse proxy
 
