@@ -6,7 +6,7 @@
 
 [Self-Hosted AI Stack](https://github.com/hwdsl2/self-hosted-ai-stack/blob/main/README-zh.md) 的一部分 ─ 一条命令部署完整的自托管 AI 技术栈。
 
-用于运行 [Ollama](https://github.com/ollama/ollama) 本地大语言模型服务器的 Docker 镜像。提供与 OpenAI 兼容的 API，可在本地运行大型语言模型。基于 Debian Trixie（slim）。设计简单、私密，并默认安全。
+用于运行 [Ollama](https://github.com/ollama/ollama) 本地大语言模型服务器的 Docker 镜像。提供 Ollama 与 OpenAI 兼容的 `/v1` API 子集，可在本地运行大型语言模型。基于 Debian Trixie（slim）。设计简单、私密，并默认安全。
 
 **功能特性：**
 
@@ -14,7 +14,7 @@
 - 首次启动时自动生成 API 密钥，并存储在持久化卷中
 - 通过 `OLLAMA_MODELS` 环境变量在首次启动时预先拉取模型
 - 通过辅助脚本（`ollama_manage`）管理模型
-- 与 OpenAI 兼容的 API — 只需修改一行即可将任何 OpenAI SDK 或应用指向本地服务器
+- 与 OpenAI 兼容的 `/v1` API 子集 — 只需修改一行即可将兼容的 OpenAI SDK 和应用工作流指向本地服务器
 - Caddy 反向代理对所有 API 请求强制执行 Bearer Token 认证（`/` 健康检查除外）
 - NVIDIA GPU (CUDA) 加速推理（使用 `:cuda` 镜像标签）
 - 通过 [GitHub Actions](https://github.com/hwdsl2/docker-ollama/actions/workflows/main.yml) 自动构建和发布
@@ -270,7 +270,7 @@ curl http://localhost:11434/api/chat \
   -d '{"model": "llama3.2:3b", "messages": [{"role": "user", "content": "你好！"}]}'
 ```
 
-**OpenAI 兼容 API**（适用于任何 OpenAI SDK 或应用）：
+**OpenAI 兼容 API**（Ollama `/v1` 子集；适用于兼容的 OpenAI SDK 和应用工作流）：
 
 ```bash
 curl http://localhost:11434/v1/chat/completions \

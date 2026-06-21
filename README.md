@@ -6,7 +6,7 @@
 
 Part of the [Self-Hosted AI Stack](https://github.com/hwdsl2/self-hosted-ai-stack) — deploy a complete self-hosted AI stack with a single command.
 
-Docker image to run an [Ollama](https://github.com/ollama/ollama) local LLM server. Provides an OpenAI-compatible API for running large language models locally. Based on Debian Trixie (slim). Designed to be simple, private, and secure by default.
+Docker image to run an [Ollama](https://github.com/ollama/ollama) local LLM server. Provides Ollama's OpenAI-compatible `/v1` API subset for running large language models locally. Based on Debian Trixie (slim). Designed to be simple, private, and secure by default.
 
 **Features:**
 
@@ -14,7 +14,7 @@ Docker image to run an [Ollama](https://github.com/ollama/ollama) local LLM serv
 - Auto-generates an API key on first start, stored in the persistent volume
 - First-start model pre-pull via `OLLAMA_MODELS` environment variable
 - Model management via a helper script (`ollama_manage`)
-- OpenAI-compatible API — point any OpenAI SDK or app at your local server with a one-line change
+- OpenAI-compatible `/v1` API subset — point compatible OpenAI SDK and app workflows at your local server with a one-line change
 - Caddy reverse proxy enforces Bearer token auth on all API requests (except `/` health check)
 - NVIDIA GPU (CUDA) acceleration for faster inference (`:cuda` image tag)
 - Automatically built and published via [GitHub Actions](https://github.com/hwdsl2/docker-ollama/actions/workflows/main.yml)
@@ -270,7 +270,7 @@ curl http://localhost:11434/api/chat \
   -d '{"model": "llama3.2:3b", "messages": [{"role": "user", "content": "Hello!"}]}'
 ```
 
-**OpenAI-compatible API** (works with any OpenAI SDK or app):
+**OpenAI-compatible API** (Ollama `/v1` subset; works with compatible OpenAI SDK and app workflows):
 
 ```bash
 curl http://localhost:11434/v1/chat/completions \
