@@ -2,6 +2,11 @@ name: buildx-cuda
 
 on:
   workflow_call:
+    inputs:
+      no_cache:
+        required: false
+        type: boolean
+        default: false
     secrets:
       CACHE_NAME:
         required: true
@@ -90,13 +95,18 @@ jobs:
 
           [ "$BUILD_ONLY" = "true" ] && BUILD_ONLY=""
           ts_now=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+          NO_CACHE_ARGS=()
+          if [ "${{ inputs.no_cache }}" = "true" ]; then
+            NO_CACHE_ARGS=(--no-cache)
+          fi
 
           docker buildx build \
             --progress plain \
             --platform=linux/amd64 \
-            --build-arg BUILD_DATE=$ts_now \
-            --build-arg VCS_REF=${GITHUB_SHA::8} \
-            --build-arg VERSION=cuda \
+            --build-arg "BUILD_DATE=$ts_now" \
+            --build-arg "VCS_REF=${GITHUB_SHA::8}" \
+            --build-arg "VERSION=cuda" \
+            "${NO_CACHE_ARGS[@]}" \
             --cache-from type=local,src="${RUNNER_TEMP}/.buildx-cache-cuda" \
             --cache-to type=local,dest="${RUNNER_TEMP}/.buildx-cache-cuda-new" \
             -f Dockerfile.cuda \
@@ -108,9 +118,9 @@ jobs:
           docker buildx build \
             --progress plain \
             --platform=linux/amd64 \
-            --build-arg BUILD_DATE=$ts_now \
-            --build-arg VCS_REF=${GITHUB_SHA::8} \
-            --build-arg VERSION=cuda \
+            --build-arg "BUILD_DATE=$ts_now" \
+            --build-arg "VCS_REF=${GITHUB_SHA::8}" \
+            --build-arg "VERSION=cuda" \
             --cache-from type=local,src="${RUNNER_TEMP}/.buildx-cache-cuda-new" \
             -f Dockerfile.cuda \
             -t "quay.io/$DOCKER_USER/ollama-server:cuda" \

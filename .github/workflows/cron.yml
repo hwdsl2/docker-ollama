@@ -17,8 +17,15 @@ jobs:
     secrets:
       CACHE_NAME: ${{ secrets.CACHE_NAME }}
 
+  ollama_test:
+    needs: [check_update, check_update_cuda]
+    if: |
+      needs.check_update.outputs.should_test == 'true'
+      || needs.check_update_cuda.outputs.should_test == 'true'
+    uses: ./.github/workflows/ollama_test.yml
+
   buildx:
-    needs: [check_update]
+    needs: [check_update, ollama_test]
     if: needs.check_update.outputs.should_update == 'true'
     uses: ./.github/workflows/buildx.yml
     secrets:
@@ -29,9 +36,13 @@ jobs:
       BUILD_ONLY: ${{ secrets.BUILD_ONLY }}
 
   buildx-cuda:
-    needs: [check_update_cuda]
-    if: needs.check_update_cuda.outputs.should_update == 'true'
+    needs: [check_update, check_update_cuda, ollama_test]
+    if: |
+      needs.check_update_cuda.outputs.should_update == 'true'
+      || needs.check_update.outputs.should_update == 'true'
     uses: ./.github/workflows/buildx-cuda.yml
+    with:
+      no_cache: ${{ needs.check_update.outputs.should_update == 'true' && needs.check_update_cuda.outputs.should_update != 'true' }}
     secrets:
       CACHE_NAME: ${{ secrets.CACHE_NAME }}
       DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}

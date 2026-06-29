@@ -6,6 +6,8 @@ on:
       CACHE_NAME:
         required: true
     outputs:
+      should_test:
+        value: ${{ jobs.check_update.outputs.should_test }}
       should_update:
         value: ${{ jobs.check_update.outputs.should_update }}
 
@@ -16,6 +18,7 @@ jobs:
     env:
       DOCKER_USER: ${{ github.repository_owner }}
     outputs:
+      should_test: ${{ steps.check.outputs.should_test }}
       should_update: ${{ steps.check.outputs.should_update }}
     steps:
       - name: Cache
@@ -62,4 +65,5 @@ jobs:
               echo "Not starting build."
             fi
           fi
+          echo "should_test=${BASE_UPDATED}" >> "$GITHUB_OUTPUT"
           echo "should_update=${BASE_UPDATED}" >> "$GITHUB_OUTPUT"
