@@ -32,14 +32,14 @@ jobs:
             ${{ secrets.CACHE_NAME }}-cuda-
       - name: Prepare
         run: |
-          docker pull nvidia/cuda:12.9.1-base-ubuntu24.04
+          docker pull nvidia/cuda:12.9.2-base-ubuntu24.04
           docker pull "$DOCKER_USER/ollama-server:cuda" || true
       - name: Check
         id: check
         run: |
           BASE_UPDATED=false
 
-          base_ts=$(docker inspect --format='{{.Created}}' nvidia/cuda:12.9.1-base-ubuntu24.04)
+          base_ts=$(docker inspect --format='{{.Created}}' nvidia/cuda:12.9.2-base-ubuntu24.04)
           image_ts=$(docker inspect --format='{{.Created}}' "$DOCKER_USER/ollama-server:cuda" 2>/dev/null || true)
 
           if [ -n "$base_ts" ] && [ -n "$image_ts" ]; then
