@@ -4,7 +4,7 @@
 # This work is licensed under the MIT License
 # See: https://opensource.org/licenses/MIT
 
-FROM nvidia/cuda:12.9.1-base-ubuntu24.04
+FROM nvidia/cuda:12.9.2-base-ubuntu24.04
 
 WORKDIR /opt/src
 
