@@ -19,7 +19,7 @@
 - NVIDIA GPU (CUDA) 加速推論（使用 `:cuda` 映像標籤）
 - 透過 [GitHub Actions](https://github.com/hwdsl2/docker-ollama/actions/workflows/main.yml) 自動建置和發布
 - 透過 Docker 卷持久化儲存模型資料
-- 輕量級映像（約 70MB）；多架構：`linux/amd64`、`linux/arm64`
+- 輕量級映像（約 75MB）；多架構：`linux/amd64`、`linux/arm64`
 
 **另提供：**
 
@@ -423,8 +423,8 @@ docker exec litellm litellm_manage \
 
 ## 技術細節
 
-- 基礎映像：`debian:trixie-slim`（CPU）/ `nvidia/cuda:12.9.1-base-ubuntu24.04`（CUDA）
-- 映像大小：約 70MB（CPU）/ 約 3.2GB（CUDA）
+- 基礎映像：`:latest` 使用 `debian:trixie-slim`；`:cuda` 使用 `nvidia/cuda`
+- 映像大小：約 75MB（CPU）/ 約 1.7GB（CUDA）
 - Ollama：最新版本，以靜態二進位檔案安裝
 - 驗證代理：[Caddy](https://caddyserver.com)（始終啟用，強制執行 Bearer Token 驗證）
 - 資料目錄：`/var/lib/ollama`（Docker 卷）

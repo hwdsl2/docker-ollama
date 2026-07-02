@@ -19,7 +19,7 @@ Docker-образ для запуска локального LLM-сервера 
 - Ускорение на GPU NVIDIA (CUDA) для более быстрого инференса (тег образа `:cuda`)
 - Автоматическая сборка и публикация через [GitHub Actions](https://github.com/hwdsl2/docker-ollama/actions/workflows/main.yml)
 - Постоянное хранение моделей через Docker-том
-- Лёгкий образ (~70 МБ); мультиархитектурный: `linux/amd64`, `linux/arm64`
+- Лёгкий образ (~75 МБ); мультиархитектурный: `linux/amd64`, `linux/arm64`
 
 **Также доступно:**
 
@@ -423,8 +423,8 @@ docker exec litellm litellm_manage \
 
 ## Технические подробности
 
-- Базовый образ: `debian:trixie-slim` (CPU) / `nvidia/cuda:12.9.1-base-ubuntu24.04` (CUDA)
-- Размер образа: ~70 МБ (CPU) / ~3.2 ГБ (CUDA)
+- Базовый образ: `debian:trixie-slim` для `:latest`; `nvidia/cuda` для `:cuda`
+- Размер образа: ~75 МБ (CPU) / ~1.7 ГБ (CUDA)
 - Ollama: последняя версия, установлена как статический бинарный файл
 - Прокси аутентификации: [Caddy](https://caddyserver.com) (всегда активен, обеспечивает аутентификацию Bearer Token)
 - Каталог данных: `/var/lib/ollama` (Docker-том)

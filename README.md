@@ -19,7 +19,7 @@ Docker image to run an [Ollama](https://github.com/ollama/ollama) local LLM serv
 - NVIDIA GPU (CUDA) acceleration for faster inference (`:cuda` image tag)
 - Automatically built and published via [GitHub Actions](https://github.com/hwdsl2/docker-ollama/actions/workflows/main.yml)
 - Persistent model storage via a Docker volume
-- Lightweight image (~70MB); multi-arch: `linux/amd64`, `linux/arm64`
+- Lightweight image (~75MB); multi-arch: `linux/amd64`, `linux/arm64`
 
 **Also available:**
 
@@ -423,8 +423,8 @@ docker exec litellm litellm_manage \
 
 ## Technical details
 
-- Base image: `debian:trixie-slim` (CPU) / `nvidia/cuda:12.9.1-base-ubuntu24.04` (CUDA)
-- Image size: ~70MB (CPU) / ~3.2GB (CUDA)
+- Base image: `debian:trixie-slim` for `:latest`; `nvidia/cuda` for `:cuda`
+- Image size: ~75MB (CPU) / ~1.7GB (CUDA)
 - Ollama: latest release, installed as a static binary
 - Auth proxy: [Caddy](https://caddyserver.com) (always active, enforces Bearer token auth)
 - Data directory: `/var/lib/ollama` (Docker volume)
