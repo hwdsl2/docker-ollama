@@ -2,6 +2,9 @@ name: ollama_test
 
 on: workflow_call
 
+permissions:
+  contents: read
+
 jobs:
   ollama_test:
     runs-on: ubuntu-24.04
