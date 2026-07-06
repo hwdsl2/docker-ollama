@@ -1,0 +1,75 @@
+name: cuda_test
+
+on: workflow_call
+
+permissions:
+  contents: read
+
+jobs:
+  cuda_test:
+    runs-on: ubuntu-24.04
+    if: github.repository_owner == 'hwdsl2'
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Test CUDA image boot without GPU
+        run: |
+          [ ! -x /usr/bin/docker ] && exit 1
+
+          cd "$GITHUB_WORKSPACE"
+          pwd
+
+          set -x
+
+          docker build -f Dockerfile.cuda -t ollama-cuda-test .
+
+          docker run \
+            --name ollama-cuda-runtime-test \
+            --restart=always \
+            -v ollama-cuda-runtime-test-data:/var/lib/ollama \
+            -p 11434:11434/tcp \
+            -d ollama-cuda-test
+
+          # Wait for server to be ready (up to 120 seconds)
+          i=0
+          while [ "$i" -lt 120 ]; do
+            if curl -sf http://127.0.0.1:11434/ >/dev/null 2>&1; then
+              break
+            fi
+            sleep 1
+            i=$((i + 1))
+          done
+
+          docker ps | grep ollama-cuda-runtime-test
+          docker logs ollama-cuda-runtime-test
+
+          # Verify root endpoint is accessible without auth.
+          curl -sf http://127.0.0.1:11434/
+
+          API_KEY=$(docker exec ollama-cuda-runtime-test cat /var/lib/ollama/.api_key)
+          [ -n "$API_KEY" ] || { echo "API key not found"; exit 1; }
+
+          # Verify auth enforcement and basic API availability.
+          http_code=$(curl -s -o /dev/null -w '%{http_code}' \
+            http://127.0.0.1:11434/api/tags 2>/dev/null || true)
+          [ "$http_code" = "401" ] || { echo "Expected 401 without key, got $http_code"; exit 1; }
+
+          curl -sf http://127.0.0.1:11434/api/tags \
+            -H "Authorization: Bearer $API_KEY" \
+            | grep -q '"models"'
+
+          curl -sf http://127.0.0.1:11434/v1/models \
+            -H "Authorization: Bearer $API_KEY" \
+            | grep -q '"object"'
+
+          docker exec ollama-cuda-runtime-test ollama_manage --listmodels
+          docker exec ollama-cuda-runtime-test test -x /usr/local/bin/ollama
+
+          exit 0
+      - name: Clear
+        if: always()
+        run: |
+          docker rm -f ollama-cuda-runtime-test || true
+          docker volume rm ollama-cuda-runtime-test-data || true
+          docker rmi ollama-cuda-test || true
