@@ -94,12 +94,97 @@ for _var in OLLAMA_MAX_LOADED_MODELS OLLAMA_NUM_PARALLEL OLLAMA_CONTEXT_LENGTH; 
 done
 
 # Ensure data directory exists
-mkdir -p /var/lib/ollama
-chmod 700 /var/lib/ollama
+DATA_DIR="/var/lib/ollama"
+mkdir -p "$DATA_DIR"
+chmod 700 "$DATA_DIR"
 
-API_KEY_FILE="/var/lib/ollama/.api_key"
-PORT_FILE="/var/lib/ollama/.port"
-INITIALIZED_MARKER="/var/lib/ollama/.initialized"
+API_KEY_FILE="${DATA_DIR}/.api_key"
+PORT_FILE="${DATA_DIR}/.port"
+INITIALIZED_MARKER="${DATA_DIR}/.initialized"
+USAGE_STATE_DIR="${DATA_DIR}/.ollama-usage"
+USAGE_BASE_URL=${OLLAMA_USAGE_BASE_URL:-https://github.com/hwdsl2/ai-stack-extras/releases/download/v1.0.0}
+data_mounted=false
+data_existing=false
+
+if grep -q " ${DATA_DIR} " /proc/mounts 2>/dev/null; then
+  data_mounted=true
+fi
+if $data_mounted && find "$DATA_DIR" -mindepth 1 -maxdepth 1 -print -quit 2>/dev/null | grep -q .; then
+  data_existing=true
+fi
+
+usage_arch() {
+  local arch
+  arch=$(uname -m 2>/dev/null || printf 'unknown')
+  case "$arch" in
+    x86_64|amd64) printf 'amd64' ;;
+    aarch64|arm64) printf 'arm64' ;;
+    *) printf 'other' ;;
+  esac
+}
+
+write_usage_state() {
+  local state_file version tmp_file
+  state_file=$1
+  version=$2
+  mkdir -p "$USAGE_STATE_DIR"
+  tmp_file=$(mktemp "$USAGE_STATE_DIR/.usage.XXXXXX")
+  printf '%s\n' "$version" > "$tmp_file"
+  chmod 0644 "$tmp_file" 2>/dev/null || true
+  mv "$tmp_file" "$state_file"
+}
+
+fetch_usage_asset() {
+  local asset base_url
+  asset=$1
+  base_url=${USAGE_BASE_URL%/}
+  if command -v curl >/dev/null 2>&1; then
+    curl -fsSL --max-time 5 -o /dev/null "$base_url/$asset" >/dev/null 2>&1
+  elif command -v wget >/dev/null 2>&1; then
+    wget -q -T 5 -O /dev/null "$base_url/$asset" >/dev/null 2>&1
+  else
+    return 1
+  fi
+}
+
+read_state_value() {
+  [ -r "$1" ] || return 0
+  tr -d '[:space:]' < "$1"
+}
+
+report_usage_counts() {
+  local current_version accel arch state_file last_version action
+
+  [ "${OLLAMA_DISABLE_USAGE_COUNTS:-0}" != "1" ] || return 0
+  $data_mounted || return 0
+
+  current_version="${IMAGE_FLAVOR:-unknown}-${IMAGE_VER:-unknown}"
+  case "${IMAGE_FLAVOR:-}" in
+    cuda) accel=cuda ;;
+    *) accel=cpu ;;
+  esac
+  arch=$(usage_arch)
+
+  state_file="$USAGE_STATE_DIR/ollama.version"
+  last_version=$(read_state_value "$state_file")
+  action=
+
+  if [ -z "$last_version" ]; then
+    if $data_existing; then
+      action=upgrade
+    else
+      action=deploy
+    fi
+  elif [ "$last_version" != "$current_version" ]; then
+    action=upgrade
+  fi
+
+  if [ -n "$action" ]; then
+    if fetch_usage_asset "cu-v1-ollama-$action-$accel-$arch"; then
+      write_usage_state "$state_file" "$current_version"
+    fi
+  fi
+}
 
 # Generate or load API key
 if [ -n "$OLLAMA_API_KEY" ]; then
@@ -158,7 +243,7 @@ fi
 # We store the user-set OLLAMA_HOST (display hostname) in server_addr above, then
 # overwrite OLLAMA_HOST here so ollama serve and the ollama CLI both use localhost.
 export OLLAMA_HOST="127.0.0.1:${OLLAMA_INTERNAL_PORT}"
-export OLLAMA_MODELS="/var/lib/ollama/models"
+export OLLAMA_MODELS="${DATA_DIR}/models"
 
 [ -n "$OLLAMA_MAX_LOADED_MODELS" ] && export OLLAMA_MAX_LOADED_MODELS
 [ -n "$OLLAMA_NUM_PARALLEL" ]      && export OLLAMA_NUM_PARALLEL
@@ -233,7 +318,7 @@ if $first_run; then
 fi
 
 # Start Caddy auth proxy (always enabled)
-CADDY_CONFIG_FILE="/var/lib/ollama/.Caddyfile"
+CADDY_CONFIG_FILE="${DATA_DIR}/.Caddyfile"
 cat > "$CADDY_CONFIG_FILE" << CADDYEOF
 :${OLLAMA_PORT} {
   @unauthed {
@@ -253,13 +338,16 @@ CADDY_PID=$!
 _i=0
 while [ "$_i" -lt 5 ]; do
   kill -0 "$CADDY_PID" 2>/dev/null || break
-  curl -sf --max-time 1 "http://127.0.0.1:${OLLAMA_PORT}/" >/dev/null 2>&1 && break
+  if curl -sf --max-time 1 "http://127.0.0.1:${OLLAMA_PORT}/" >/dev/null 2>&1; then
+    break
+  fi
   sleep 1
   _i=$((_i + 1))
 done
 if ! kill -0 "$CADDY_PID" 2>/dev/null; then
   exiterr "Caddy auth proxy failed to start."
 fi
+report_usage_counts
 
 # Copy API key to shared volume if mounted (used by self-hosted-ai-stack)
 if grep -q " /var/lib/ollama-shared " /proc/mounts 2>/dev/null; then
