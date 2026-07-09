@@ -173,6 +173,7 @@ docker image tag quay.io/hwdsl2/ollama-server hwdsl2/ollama-server
 | `OLLAMA_MAX_LOADED_MODELS` | 同时保持加载在内存中的最大模型数 | *(Ollama 默认)* |
 | `OLLAMA_NUM_PARALLEL` | 每个模型的并行请求槽数 | *(Ollama 默认)* |
 | `OLLAMA_CONTEXT_LENGTH` | 默认上下文窗口大小（token 数） | *(Ollama 默认)* |
+| `OLLAMA_DISABLE_USAGE_COUNTS` | 设为 `1` 可禁用匿名聚合使用计数。 | *（未设置）* |
 
 **注意：** 在 `env` 文件中，您可以将值用单引号括起来，例如 `VAR='value'`。不要在 `=` 两侧添加空格。如果您更改了 `OLLAMA_PORT`，请相应地更新 `docker run` 命令中的 `-p` 标志。
 
@@ -429,6 +430,10 @@ docker exec litellm litellm_manage \
   --addmodel ollama/llama3.2:3b \
   --base-url http://ollama:11434
 ```
+
+## 使用计数
+
+此镜像使用公开的 GitHub Release 资源下载次数进行匿名聚合使用计数。计数是近似值，不代表唯一用户或活跃安装。镜像不会发送遥测负载，也不会使用私有收集器。仅当服务器成功启动且挂载了 `/var/lib/ollama` 卷后，才会以尽力而为方式计数；当该持久化安装首次运行不同镜像构建时，也会再次计数。要退出，请设置 `OLLAMA_DISABLE_USAGE_COUNTS=1`。
 
 ## 技术细节
 

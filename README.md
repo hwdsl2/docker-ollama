@@ -173,6 +173,7 @@ This Docker image uses the following variables, that can be declared in an `env`
 | `OLLAMA_MAX_LOADED_MODELS` | Max models kept loaded in memory simultaneously | *(Ollama default)* |
 | `OLLAMA_NUM_PARALLEL` | Number of parallel request slots per model | *(Ollama default)* |
 | `OLLAMA_CONTEXT_LENGTH` | Default context window size in tokens | *(Ollama default)* |
+| `OLLAMA_DISABLE_USAGE_COUNTS` | Set to `1` to disable anonymous aggregate usage counts. | *(not set)* |
 
 **Note:** In your `env` file, you may enclose values in single quotes, e.g. `VAR='value'`. Do not add spaces around `=`. If you change `OLLAMA_PORT`, update the `-p` flag in the `docker run` command accordingly.
 
@@ -429,6 +430,10 @@ docker exec litellm litellm_manage \
   --addmodel ollama/llama3.2:3b \
   --base-url http://ollama:11434
 ```
+
+## Usage counts
+
+This image uses public GitHub release asset download counts for anonymous, aggregate usage counts. Counts are approximate and are not unique users or active installs. The image does not send a telemetry payload or use a private collector. It only attempts the best-effort count after the server starts successfully with a mounted `/var/lib/ollama` volume, and again when that persistent install first runs a different image build. To opt out, set `OLLAMA_DISABLE_USAGE_COUNTS=1`.
 
 ## Technical details
 
