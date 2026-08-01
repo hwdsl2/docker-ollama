@@ -17,7 +17,7 @@
 - 與 OpenAI 相容的 `/v1` API 子集 — 只需修改一行即可將相容的 OpenAI SDK 和應用程式工作流程指向本地伺服器
 - Caddy 反向代理對所有 API 請求強制執行 Bearer Token 驗證（`/` 健康檢查除外）
 - NVIDIA GPU (CUDA) 加速推論（使用 `:cuda` 映像標籤）
-- 透過 [GitHub Actions](https://github.com/hwdsl2/docker-ollama/actions/workflows/main.yml) 自動建置和發布
+- 透過 [GitHub Actions](https://github.com/hwdsl2/docker-ollama/actions) 自動建置和發布
 - 透過 Docker 卷持久化儲存模型資料
 - 輕量級映像（約 75MB）；多架構：`linux/amd64`、`linux/arm64`
 

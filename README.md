@@ -17,7 +17,7 @@ Docker image to run an [Ollama](https://github.com/ollama/ollama) local LLM serv
 - OpenAI-compatible `/v1` API subset — point compatible OpenAI SDK and app workflows at your local server with a one-line change
 - Caddy reverse proxy enforces Bearer token auth on all API requests (except `/` health check)
 - NVIDIA GPU (CUDA) acceleration for faster inference (`:cuda` image tag)
-- Automatically built and published via [GitHub Actions](https://github.com/hwdsl2/docker-ollama/actions/workflows/main.yml)
+- Automatically built and published via [GitHub Actions](https://github.com/hwdsl2/docker-ollama/actions)
 - Persistent model storage via a Docker volume
 - Lightweight image (~75MB); multi-arch: `linux/amd64`, `linux/arm64`
 
