@@ -35,6 +35,7 @@ jobs:
             docker run \
               --name "$TEST_ID" \
               --restart=always \
+              -e OLLAMA_DISABLE_USAGE_COUNTS=1 \
               -v ollama-test-data:/var/lib/ollama \
               -v ./ollama.env.example:/ollama.env:ro \
               -p 11434:11434/tcp \
@@ -43,6 +44,7 @@ jobs:
             docker run \
               --name "$TEST_ID" \
               --restart=always \
+              -e OLLAMA_DISABLE_USAGE_COUNTS=1 \
               -v ollama-test-data:/var/lib/ollama \
               -p 11434:11434/tcp \
               -d ollama-test
@@ -50,6 +52,7 @@ jobs:
             docker run \
               --name "$TEST_ID" \
               --restart=always \
+              -e OLLAMA_DISABLE_USAGE_COUNTS=1 \
               -v ollama-test-data:/var/lib/ollama \
               -v ollama-test-shared:/var/lib/ollama-shared \
               -p 11434:11434/tcp \

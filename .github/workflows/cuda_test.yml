@@ -22,11 +22,17 @@ jobs:
 
           set -x
 
-          docker build -f Dockerfile.cuda -t ollama-cuda-test .
+          docker build \
+            -f Dockerfile.cuda \
+            --build-arg BUILD_DATE=ci-test \
+            --build-arg VERSION=cuda \
+            -t ollama-cuda-test \
+            .
 
           docker run \
             --name ollama-cuda-runtime-test \
             --restart=always \
+            -e OLLAMA_DISABLE_USAGE_COUNTS=1 \
             -v ollama-cuda-runtime-test-data:/var/lib/ollama \
             -p 11434:11434/tcp \
             -d ollama-cuda-test
