@@ -8,6 +8,8 @@ Part of the [Self-Hosted AI Stack](https://github.com/hwdsl2/self-hosted-ai-stac
 
 Docker image to run an [Ollama](https://github.com/ollama/ollama) local LLM server. Provides Ollama's OpenAI-compatible `/v1` API subset for running large language models locally. Based on Debian Trixie (slim). Designed to be simple, private, and secure by default.
 
+> 📘 **New book:** [The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon) — learn how to deploy this service as part of a complete, secure-by-default private AI stack.
+
 **Features:**
 
 - **Secure by default** — all API requests require a Bearer token (auto-generated on first start)
@@ -23,7 +25,6 @@ Docker image to run an [Ollama](https://github.com/ollama/ollama) local LLM serv
 
 **Also available:**
 
-- **New book:** [The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon) — deploy this service as part of a secure, complete private AI stack
 - Related AI services: [Whisper](https://github.com/hwdsl2/docker-whisper), [Kokoro](https://github.com/hwdsl2/docker-kokoro), [Embeddings](https://github.com/hwdsl2/docker-embeddings), [LiteLLM](https://github.com/hwdsl2/docker-litellm), [Docling](https://github.com/hwdsl2/docker-docling), [MCP Gateway](https://github.com/hwdsl2/docker-mcp-gateway)
 
 ## Community

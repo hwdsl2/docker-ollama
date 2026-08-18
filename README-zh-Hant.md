@@ -8,6 +8,8 @@
 
 用於執行 [Ollama](https://github.com/ollama/ollama) 本地大型語言模型伺服器的 Docker 映像。提供 Ollama 與 OpenAI 相容的 `/v1` API 子集，可在本地執行大型語言模型。基於 Debian Trixie（slim）。設計簡單、私密，並預設安全。
 
+> 📘 **新書：**[The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon)——瞭解如何將此服務部署為完整且預設即安全的私有 AI 技術棧的一部分。
+
 **功能特色：**
 
 - **預設安全** — 所有 API 請求均需 Bearer Token（首次啟動時自動產生）
@@ -23,7 +25,6 @@
 
 **另提供：**
 
-- **新書：**[The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon)——將此服務部署為安全、完整的私有 AI 技術棧的一部分
 - 相關 AI 服務：[Whisper](https://github.com/hwdsl2/docker-whisper/blob/main/README-zh-Hant.md)、[Kokoro](https://github.com/hwdsl2/docker-kokoro/blob/main/README-zh-Hant.md)、[Embeddings](https://github.com/hwdsl2/docker-embeddings/blob/main/README-zh-Hant.md)、[LiteLLM](https://github.com/hwdsl2/docker-litellm/blob/main/README-zh-Hant.md)、[Docling](https://github.com/hwdsl2/docker-docling/blob/main/README-zh-Hant.md)、[MCP Gateway](https://github.com/hwdsl2/docker-mcp-gateway/blob/main/README-zh-Hant.md)
 
 ## 社群

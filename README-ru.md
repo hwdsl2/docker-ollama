@@ -8,6 +8,8 @@
 
 Docker-образ для запуска локального LLM-сервера [Ollama](https://github.com/ollama/ollama). Предоставляет совместимое с OpenAI подмножество API `/v1` от Ollama для запуска больших языковых моделей локально. Основан на Debian Trixie (slim). Разработан для простоты, конфиденциальности и безопасности по умолчанию.
 
+> 📘 **Новая книга:** [The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon) — узнайте, как развернуть этот сервис в составе полного приватного AI-стека с безопасными настройками по умолчанию.
+
 **Возможности:**
 
 - **Безопасность по умолчанию** — все API-запросы требуют Bearer Token (автоматически генерируется при первом запуске)
@@ -23,7 +25,6 @@ Docker-образ для запуска локального LLM-сервера 
 
 **Также доступно:**
 
-- **Новая книга:** [The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon) — разверните этот сервис в составе безопасного и полного приватного AI-стека
 - Связанные AI-сервисы: [Whisper](https://github.com/hwdsl2/docker-whisper/blob/main/README-ru.md), [Kokoro](https://github.com/hwdsl2/docker-kokoro/blob/main/README-ru.md), [Embeddings](https://github.com/hwdsl2/docker-embeddings/blob/main/README-ru.md), [LiteLLM](https://github.com/hwdsl2/docker-litellm/blob/main/README-ru.md), [Docling](https://github.com/hwdsl2/docker-docling/blob/main/README-ru.md), [MCP Gateway](https://github.com/hwdsl2/docker-mcp-gateway/blob/main/README-ru.md)
 
 ## Сообщество
