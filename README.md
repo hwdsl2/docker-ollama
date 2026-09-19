@@ -46,7 +46,8 @@ docker run \
 
 On first start, an API key is auto-generated and displayed in the container logs. All API requests require this key.
 
-**Note:** For internet-facing deployments, using a [reverse proxy](#using-a-reverse-proxy) to add HTTPS is **strongly recommended**. In that case, also replace `-p 11434:11434/tcp` with `-p 127.0.0.1:11434:11434/tcp` in the `docker run` command above, to prevent direct access to the unencrypted port.
+> [!NOTE]
+> For internet-facing deployments, use a [reverse proxy](#using-a-reverse-proxy) to add HTTPS. Also replace `-p 11434:11434/tcp` with `-p 127.0.0.1:11434:11434/tcp` in the `docker run` command above, to prevent direct access to the unencrypted port.
 
 **Step 2.** Get the API key:
 
@@ -348,7 +349,8 @@ volumes:
     name: ollama-data
 ```
 
-**Note:** For internet-facing deployments, using a [reverse proxy](#using-a-reverse-proxy) to add HTTPS is **strongly recommended**. In that case, also change `"11434:11434/tcp"` to `"127.0.0.1:11434:11434/tcp"` in `docker-compose.yml`, to prevent direct access to the unencrypted port.
+> [!NOTE]
+> For internet-facing deployments, use a [reverse proxy](#using-a-reverse-proxy) to add HTTPS. Also change `"11434:11434/tcp"` to `"127.0.0.1:11434:11434/tcp"` in `docker-compose.yml`, to prevent direct access to the unencrypted port.
 
 ### GPU acceleration (CUDA)
 
