@@ -25,7 +25,7 @@ Docker image to run an [Ollama](https://github.com/ollama/ollama) local LLM serv
 
 **Also available:**
 
-- Related AI services: [Whisper](https://github.com/hwdsl2/docker-whisper), [Kokoro](https://github.com/hwdsl2/docker-kokoro), [Embeddings](https://github.com/hwdsl2/docker-embeddings), [LiteLLM](https://github.com/hwdsl2/docker-litellm), [Docling](https://github.com/hwdsl2/docker-docling), [MCP Gateway](https://github.com/hwdsl2/docker-mcp-gateway)
+- Related AI services: [ScribeCrate](https://github.com/hwdsl2/scribecrate), [Kokoro](https://github.com/hwdsl2/docker-kokoro), [Embeddings](https://github.com/hwdsl2/docker-embeddings), [LiteLLM](https://github.com/hwdsl2/docker-litellm), [Docling](https://github.com/hwdsl2/docker-docling), [MCP Gateway](https://github.com/hwdsl2/docker-mcp-gateway)
 
 ## Security note
 
