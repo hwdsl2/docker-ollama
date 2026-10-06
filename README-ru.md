@@ -1,35 +1,28 @@
 [English](README.md) | [简体中文](README-zh.md) | [繁體中文](README-zh-Hant.md) | [Русский](README-ru.md)
 
-# Ollama на Docker
+# LLM-сервер Ollama на Docker
 
 [![Статус сборки](https://github.com/hwdsl2/docker-ollama/actions/workflows/main.yml/badge.svg)](https://github.com/hwdsl2/docker-ollama/actions/workflows/main.yml) &nbsp;[![Docker Pulls](https://raw.githubusercontent.com/hwdsl2/badges/main/img/docker-pulls-ollama-server.svg)](https://hub.docker.com/r/hwdsl2/ollama-server) &nbsp;[![Лицензия: MIT](docs/images/license.svg)](https://opensource.org/licenses/MIT)
-
-Часть [Self-Hosted AI Stack](https://github.com/hwdsl2/self-hosted-ai-stack/blob/main/README-ru.md) — разверните полный самостоятельно размещённый AI-стек одной командой.
 
 Docker-образ для запуска локального LLM-сервера [Ollama](https://github.com/ollama/ollama). Предоставляет совместимое с OpenAI подмножество API `/v1` от Ollama для запуска больших языковых моделей локально. Основан на Debian Trixie (slim). Разработан для простоты, конфиденциальности и безопасности по умолчанию.
 
 **Возможности:**
 
-- **Безопасность по умолчанию** — все API-запросы требуют Bearer Token (автоматически генерируется при первом запуске)
-- Автоматически генерирует API-ключ при первом запуске, сохраняя его в постоянном томе
-- Предварительная загрузка моделей при первом запуске через переменную `OLLAMA_MODELS`
-- Управление моделями через вспомогательный скрипт (`ollama_manage`)
-- Совместимое с OpenAI подмножество API `/v1` — укажите совместимые рабочие процессы OpenAI SDK и приложений на ваш локальный сервер, изменив одну строку
-- Обратный прокси Caddy обеспечивает аутентификацию Bearer Token для всех API-запросов (кроме `/` для проверки работоспособности)
-- Ускорение на GPU NVIDIA (CUDA) для более быстрого инференса (тег образа `:cuda`)
-- Автоматическая сборка и публикация через [GitHub Actions](https://github.com/hwdsl2/docker-ollama/actions)
-- Постоянное хранение моделей через Docker-том
-- Лёгкий образ (~75 МБ); мультиархитектурный: `linux/amd64`, `linux/arm64`
+- **Совместимый с OpenAI API:** подмножество API `/v1` для совместимых OpenAI SDK и приложений, а также собственный API Ollama.
+- **Безопасность по умолчанию:** Caddy обеспечивает аутентификацию Bearer Token для доступа к API; API-ключ автоматически генерируется при первом запуске и сохраняется в постоянном томе.
+- **Предварительная загрузка моделей:** Предварительная загрузка моделей при первом запуске через переменную `OLLAMA_MODELS`
+- **Управление моделями:** через вспомогательный скрипт (`ollama_manage`)
+- **Поддержка CPU и GPU:** работа на CPU или ускорение на GPU NVIDIA с образом `:cuda`.
+- **Лёгкий образ для CPU:** размер образа около 75 МБ.
+- **Автоматическая сборка:** образы автоматически собираются и публикуются через [GitHub Actions](https://github.com/hwdsl2/docker-ollama/actions).
+
+Также доступен в составе [Self-Hosted AI Stack](https://github.com/hwdsl2/self-hosted-ai-stack/blob/main/README-ru.md), который развёртывает полный AI-стек на собственном сервере одной командой.
 
 > 📘 [The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon): практическое руководство по созданию, защите и эксплуатации собственного приватного ИИ-стека.
 
 **Также доступно:**
 
 - Связанные AI-сервисы: [ScribeCrate](https://github.com/hwdsl2/scribecrate/blob/main/README-ru.md), [Kokoro](https://github.com/hwdsl2/docker-kokoro/blob/main/README-ru.md), [Embeddings](https://github.com/hwdsl2/docker-embeddings/blob/main/README-ru.md), [LiteLLM](https://github.com/hwdsl2/docker-litellm/blob/main/README-ru.md), [Docling](https://github.com/hwdsl2/docker-docling/blob/main/README-ru.md), [MCP Gateway](https://github.com/hwdsl2/docker-mcp-gateway/blob/main/README-ru.md)
-
-## Замечание по безопасности
-
-Около 175 000 серверов Ollama были обнаружены публично доступными без аутентификации ([источник](https://www.sentinelone.com/labs/silent-brothers-ollama-hosts-form-anonymous-ai-network-beyond-platform-guardrails/)). Стандартная установка Ollama по умолчанию привязывается ко всем интерфейсам без аутентификации. Этот образ через встроенный прокси аутентификации обеспечивает **аутентификацию Bearer Token для всех API-запросов**, поэтому даже при случайном открытии порта несанкционированный доступ будет заблокирован.
 
 ## Быстрый старт
 

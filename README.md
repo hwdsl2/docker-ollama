@@ -1,35 +1,28 @@
 [English](README.md) | [简体中文](README-zh.md) | [繁體中文](README-zh-Hant.md) | [Русский](README-ru.md)
 
-# Ollama on Docker
+# Ollama LLM Server on Docker
 
 [![Build Status](https://github.com/hwdsl2/docker-ollama/actions/workflows/main.yml/badge.svg)](https://github.com/hwdsl2/docker-ollama/actions/workflows/main.yml) &nbsp;[![Docker Pulls](https://raw.githubusercontent.com/hwdsl2/badges/main/img/docker-pulls-ollama-server.svg)](https://hub.docker.com/r/hwdsl2/ollama-server) &nbsp;[![License: MIT](docs/images/license.svg)](https://opensource.org/licenses/MIT)
-
-Part of the [Self-Hosted AI Stack](https://github.com/hwdsl2/self-hosted-ai-stack) — deploy a complete self-hosted AI stack with a single command.
 
 Docker image to run an [Ollama](https://github.com/ollama/ollama) local LLM server. Provides Ollama's OpenAI-compatible `/v1` API subset for running large language models locally. Based on Debian Trixie (slim). Designed to be simple, private, and secure by default.
 
 **Features:**
 
-- **Secure by default** — all API requests require a Bearer token (auto-generated on first start)
-- Auto-generates an API key on first start, stored in the persistent volume
-- First-start model pre-pull via `OLLAMA_MODELS` environment variable
-- Model management via a helper script (`ollama_manage`)
-- OpenAI-compatible `/v1` API subset — point compatible OpenAI SDK and app workflows at your local server with a one-line change
-- Caddy reverse proxy enforces Bearer token auth on all API requests (except `/` health check)
-- NVIDIA GPU (CUDA) acceleration for faster inference (`:cuda` image tag)
-- Automatically built and published via [GitHub Actions](https://github.com/hwdsl2/docker-ollama/actions)
-- Persistent model storage via a Docker volume
-- Lightweight image (~75MB); multi-arch: `linux/amd64`, `linux/arm64`
+- **OpenAI-compatible API:** a `/v1` API subset for compatible OpenAI SDKs and apps, alongside the native Ollama API.
+- **Secure by default:** Caddy enforces Bearer token authentication for API access; an API key is auto-generated on first start and stored in the persistent volume.
+- **Model pre-pull:** pre-pull models on first start with the `OLLAMA_MODELS` environment variable.
+- **Model management:** via a helper script (`ollama_manage`).
+- **CPU and GPU support:** run on CPU or use the `:cuda` image for NVIDIA GPU acceleration.
+- **Lightweight CPU image:** approximately 75 MB.
+- **Automated builds:** images are automatically built and published through [GitHub Actions](https://github.com/hwdsl2/docker-ollama/actions).
+
+Also available as part of the [Self-Hosted AI Stack](https://github.com/hwdsl2/self-hosted-ai-stack), which deploys a complete self-hosted AI stack with a single command.
 
 > 📘 [The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon) is a practical guide to building, securing, and operating your own private AI stack.
 
 **Also available:**
 
 - Related AI services: [ScribeCrate](https://github.com/hwdsl2/scribecrate), [Kokoro](https://github.com/hwdsl2/docker-kokoro), [Embeddings](https://github.com/hwdsl2/docker-embeddings), [LiteLLM](https://github.com/hwdsl2/docker-litellm), [Docling](https://github.com/hwdsl2/docker-docling), [MCP Gateway](https://github.com/hwdsl2/docker-mcp-gateway)
-
-## Security note
-
-~175,000 Ollama servers were found publicly exposed without authentication ([source](https://www.sentinelone.com/labs/silent-brothers-ollama-hosts-form-anonymous-ai-network-beyond-platform-guardrails/)). A bare Ollama install binds to all interfaces with no auth by default. This image enforces **Bearer token authentication on all API requests** via a built-in auth proxy, so unauthorized access is blocked even if the port is accidentally exposed.
 
 ## Quick start
 

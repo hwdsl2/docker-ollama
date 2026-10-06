@@ -1,35 +1,28 @@
 [English](README.md) | [简体中文](README-zh.md) | [繁體中文](README-zh-Hant.md) | [Русский](README-ru.md)
 
-# Docker 上的 Ollama
+# Docker 上的 Ollama 大语言模型服务器
 
 [![构建状态](https://github.com/hwdsl2/docker-ollama/actions/workflows/main.yml/badge.svg)](https://github.com/hwdsl2/docker-ollama/actions/workflows/main.yml) &nbsp;[![Docker Pulls](https://raw.githubusercontent.com/hwdsl2/badges/main/img/docker-pulls-ollama-server.svg)](https://hub.docker.com/r/hwdsl2/ollama-server) &nbsp;[![授权协议: MIT](docs/images/license.svg)](https://opensource.org/licenses/MIT)
-
-[Self-Hosted AI Stack](https://github.com/hwdsl2/self-hosted-ai-stack/blob/main/README-zh.md) 的一部分 ─ 一条命令部署完整的自托管 AI 技术栈。
 
 用于运行 [Ollama](https://github.com/ollama/ollama) 本地大语言模型服务器的 Docker 镜像。提供 Ollama 与 OpenAI 兼容的 `/v1` API 子集，可在本地运行大型语言模型。基于 Debian Trixie（slim）。设计简单、私密，并默认安全。
 
 **功能特性：**
 
-- **默认安全** — 所有 API 请求均需 Bearer Token（首次启动时自动生成）
-- 首次启动时自动生成 API 密钥，并存储在持久化卷中
-- 通过 `OLLAMA_MODELS` 环境变量在首次启动时预先拉取模型
-- 通过辅助脚本（`ollama_manage`）管理模型
-- 与 OpenAI 兼容的 `/v1` API 子集 — 只需修改一行即可将兼容的 OpenAI SDK 和应用工作流指向本地服务器
-- Caddy 反向代理对所有 API 请求强制执行 Bearer Token 认证（`/` 健康检查除外）
-- NVIDIA GPU (CUDA) 加速推理（使用 `:cuda` 镜像标签）
-- 通过 [GitHub Actions](https://github.com/hwdsl2/docker-ollama/actions) 自动构建和发布
-- 通过 Docker 卷持久化存储模型数据
-- 轻量级镜像（约 75MB）；多架构：`linux/amd64`、`linux/arm64`
+- **兼容 OpenAI 的 API：** 提供适用于兼容的 OpenAI SDK 和应用的 `/v1` API 子集，同时支持原生 Ollama API。
+- **默认安全：** Caddy 对 API 访问强制执行 Bearer Token 认证；首次启动时自动生成 API 密钥，并存储在持久化卷中。
+- **预先拉取模型：** 通过 `OLLAMA_MODELS` 环境变量在首次启动时预先拉取模型
+- **模型管理：** 通过辅助脚本（`ollama_manage`）管理模型
+- **CPU 和 GPU 支持：** 可在 CPU 上运行，或使用 `:cuda` 镜像启用 NVIDIA GPU 加速。
+- **轻量级 CPU 镜像：** 镜像大小约为 75 MB。
+- **自动构建：** 通过 [GitHub Actions](https://github.com/hwdsl2/docker-ollama/actions) 自动构建和发布
+
+也可作为 [Self-Hosted AI Stack](https://github.com/hwdsl2/self-hosted-ai-stack/blob/main/README-zh.md) 的一部分使用，一条命令即可部署完整的自托管 AI 技术栈。
 
 > 📘 [The Self-Hosted AI Builder’s Guide](https://books2read.com/aiguide?store=amazon) 是一本关于构建、保护和运维自己的私有 AI 技术栈的实用指南。
 
 **另提供：**
 
 - 相关 AI 服务：[ScribeCrate](https://github.com/hwdsl2/scribecrate/blob/main/README-zh.md)、[Kokoro](https://github.com/hwdsl2/docker-kokoro/blob/main/README-zh.md)、[Embeddings](https://github.com/hwdsl2/docker-embeddings/blob/main/README-zh.md)、[LiteLLM](https://github.com/hwdsl2/docker-litellm/blob/main/README-zh.md)、[Docling](https://github.com/hwdsl2/docker-docling/blob/main/README-zh.md)、[MCP Gateway](https://github.com/hwdsl2/docker-mcp-gateway/blob/main/README-zh.md)
-
-## 安全说明
-
-约 175,000 台 Ollama 服务器被发现在未经认证的情况下公开暴露（[来源](https://www.sentinelone.com/labs/silent-brothers-ollama-hosts-form-anonymous-ai-network-beyond-platform-guardrails/)）。裸装的 Ollama 默认绑定到所有接口且无认证。本镜像通过内置认证代理对**所有 API 请求强制执行 Bearer Token 认证**，即使端口意外暴露，未授权访问也会被阻止。
 
 ## 快速开始
 
