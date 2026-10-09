@@ -8,9 +8,9 @@ assignees: ''
 ---
 **Checklist**
 
-- [ ] I searched existing [Issues](https://github.com/hwdsl2/docker-ollama/issues?q=is%3Aissue), and did not find a similar enhancement request
-- [ ] I read the [README](https://github.com/hwdsl2/docker-ollama/blob/main/README.md) or the relevant section
-- [ ] This request is about the Ollama Docker image/config, not only Ollama itself
+- [ ] I searched existing [Issues](https://github.com/hwdsl2/infercrate/issues?q=is%3Aissue), and did not find a similar enhancement request
+- [ ] I read the [README](https://github.com/hwdsl2/infercrate/blob/main/README.md) or the relevant section
+- [ ] This request is about the InferCrate Docker image/config, not only Ollama itself
 
 **Describe the enhancement request**
 A clear and concise description of your enhancement request.

@@ -8,9 +8,9 @@ assignees: ''
 ---
 **Checklist**
 
-- [ ] I read the [README](https://github.com/hwdsl2/docker-ollama/blob/main/README.md) or the relevant section
-- [ ] I searched existing [Issues](https://github.com/hwdsl2/docker-ollama/issues?q=is%3Aissue)
-- [ ] This issue is about the Ollama Docker image/config, not only Ollama itself
+- [ ] I read the [README](https://github.com/hwdsl2/infercrate/blob/main/README.md) or the relevant section
+- [ ] I searched existing [Issues](https://github.com/hwdsl2/infercrate/issues?q=is%3Aissue)
+- [ ] This issue is about the InferCrate Docker image/config, not only Ollama itself
 
 <!---
 If you found a reproducible bug in the upstream project itself, consider opening an issue upstream: [Ollama](https://github.com/ollama/ollama).

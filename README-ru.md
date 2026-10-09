@@ -1,10 +1,14 @@
 [English](README.md) | [简体中文](README-zh.md) | [繁體中文](README-zh-Hant.md) | [Русский](README-ru.md)
 
-# LLM-сервер Ollama на Docker
+# InferCrate
 
-[![Статус сборки](https://github.com/hwdsl2/docker-ollama/actions/workflows/main.yml/badge.svg)](https://github.com/hwdsl2/docker-ollama/actions/workflows/main.yml) &nbsp;[![Docker Pulls](https://raw.githubusercontent.com/hwdsl2/badges/main/img/docker-pulls-ollama-server.svg)](https://hub.docker.com/r/hwdsl2/ollama-server) &nbsp;[![Лицензия: MIT](docs/images/license.svg)](https://opensource.org/licenses/MIT)
+**Локальный LLM-сервер с открытым исходным кодом для самостоятельного размещения.**
 
-Docker-образ для запуска локального LLM-сервера [Ollama](https://github.com/ollama/ollama). Предоставляет совместимое с OpenAI подмножество API `/v1` от Ollama для запуска больших языковых моделей локально. Основан на Debian Trixie (slim). Разработан для простоты, конфиденциальности и безопасности по умолчанию.
+[![Статус сборки](https://github.com/hwdsl2/infercrate/actions/workflows/main.yml/badge.svg)](https://github.com/hwdsl2/infercrate/actions/workflows/main.yml) &nbsp;[![Docker Pulls](https://raw.githubusercontent.com/hwdsl2/badges/main/img/docker-pulls-ollama-server.svg)](https://hub.docker.com/r/hwdsl2/ollama-server) &nbsp;[![Лицензия: MIT](docs/images/license.svg)](https://opensource.org/licenses/MIT)
+
+Запускайте локальные языковые модели на своём оборудовании с InferCrate. Сервер работает на базе [Ollama](https://github.com/ollama/ollama) и предоставляет нативный API Ollama и совместимое с OpenAI подмножество API `/v1`, с аутентификацией по API-ключу, управлением моделями и развёртыванием на CPU или GPU NVIDIA.
+
+Ранее проект назывался `docker-ollama`. Docker-образ остаётся `hwdsl2/ollama-server`.
 
 **Возможности:**
 
@@ -13,8 +17,8 @@ Docker-образ для запуска локального LLM-сервера 
 - **Предварительная загрузка моделей:** Предварительная загрузка моделей при первом запуске через переменную `OLLAMA_MODELS`
 - **Управление моделями:** через вспомогательный скрипт (`ollama_manage`)
 - **Поддержка CPU и GPU:** работа на CPU или ускорение на GPU NVIDIA с образом `:cuda`.
-- **Лёгкий образ для CPU:** размер образа около 75 МБ.
-- **Автоматическая сборка:** образы автоматически собираются и публикуются через [GitHub Actions](https://github.com/hwdsl2/docker-ollama/actions).
+- **Лёгкий образ для CPU:** на базе Debian Trixie (slim); размер образа около 75 МБ.
+- **Автоматическая сборка:** образы автоматически собираются и публикуются через [GitHub Actions](https://github.com/hwdsl2/infercrate/actions).
 
 Также доступен в составе [Self-Hosted AI Stack](https://github.com/hwdsl2/self-hosted-ai-stack/blob/main/README-ru.md), который развёртывает полный AI-стек на собственном сервере одной командой.
 
@@ -22,11 +26,11 @@ Docker-образ для запуска локального LLM-сервера 
 
 **Также доступно:**
 
-- Связанные AI-сервисы: [ScribeCrate](https://github.com/hwdsl2/scribecrate/blob/main/README-ru.md), [SpeakCrate](https://github.com/hwdsl2/speakcrate/blob/main/README-ru.md), [Embeddings](https://github.com/hwdsl2/docker-embeddings/blob/main/README-ru.md), [LiteLLM](https://github.com/hwdsl2/docker-litellm/blob/main/README-ru.md), [ParseCrate](https://github.com/hwdsl2/parsecrate/blob/main/README-ru.md), [MCP Gateway](https://github.com/hwdsl2/docker-mcp-gateway/blob/main/README-ru.md)
+- Связанные AI-сервисы: [ScribeCrate](https://github.com/hwdsl2/scribecrate/blob/main/README-ru.md), [SpeakCrate](https://github.com/hwdsl2/speakcrate/blob/main/README-ru.md), [EmbedCrate](https://github.com/hwdsl2/embedcrate/blob/main/README-ru.md), [GatewayCrate](https://github.com/hwdsl2/gatewaycrate/blob/main/README-ru.md), [ParseCrate](https://github.com/hwdsl2/parsecrate/blob/main/README-ru.md), [ToolUplink](https://github.com/hwdsl2/tooluplink/blob/main/README-ru.md)
 
 ## Быстрый старт
 
-**Шаг 1.** Запустите сервер Ollama:
+**Шаг 1.** Запустите InferCrate:
 
 ```bash
 docker run \
@@ -52,7 +56,7 @@ docker logs ollama
 infer_api_key="$(docker exec ollama ollama_manage --getkey)"
 ```
 
-API-ключ отображается в рамке с надписью **Ollama API key**. Чтобы отобразить его снова в любое время:
+API-ключ отображается в рамке с надписью **InferCrate API key**. Чтобы отобразить его снова в любое время:
 
 ```bash
 docker exec ollama ollama_manage --showkey
@@ -416,7 +420,7 @@ docker rm -f ollama
 
 Ollama можно использовать как локальную службу LLM в более широком self-hosted AI-стеке.
 
-Готовые полные и облегчённые стеки Docker Compose, примеры ручного запуска через `docker run`, а также примеры голосовых, RAG- и MCP-конвейеров с SpeakCrate, Embeddings, LiteLLM, Ollama, ParseCrate и MCP Gateway см. в [Self-Hosted AI Stack](https://github.com/hwdsl2/self-hosted-ai-stack/blob/main/README-ru.md).
+Готовые полные и облегчённые стеки Docker Compose, примеры ручного запуска через `docker run`, а также примеры голосовых, RAG- и MCP-конвейеров с SpeakCrate, EmbedCrate, GatewayCrate, InferCrate, ParseCrate и ToolUplink см. в [Self-Hosted AI Stack](https://github.com/hwdsl2/self-hosted-ai-stack/blob/main/README-ru.md).
 
 **Подключите Ollama к LiteLLM:**
 

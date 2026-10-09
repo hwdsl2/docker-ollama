@@ -1,10 +1,14 @@
 [English](README.md) | [简体中文](README-zh.md) | [繁體中文](README-zh-Hant.md) | [Русский](README-ru.md)
 
-# Ollama LLM Server on Docker
+# InferCrate
 
-[![Build Status](https://github.com/hwdsl2/docker-ollama/actions/workflows/main.yml/badge.svg)](https://github.com/hwdsl2/docker-ollama/actions/workflows/main.yml) &nbsp;[![Docker Pulls](https://raw.githubusercontent.com/hwdsl2/badges/main/img/docker-pulls-ollama-server.svg)](https://hub.docker.com/r/hwdsl2/ollama-server) &nbsp;[![License: MIT](docs/images/license.svg)](https://opensource.org/licenses/MIT)
+**Open-source, self-hosted local LLM server.**
 
-Docker image to run an [Ollama](https://github.com/ollama/ollama) local LLM server. Provides Ollama's OpenAI-compatible `/v1` API subset for running large language models locally. Based on Debian Trixie (slim). Designed to be simple, private, and secure by default.
+[![Build Status](https://github.com/hwdsl2/infercrate/actions/workflows/main.yml/badge.svg)](https://github.com/hwdsl2/infercrate/actions/workflows/main.yml) &nbsp;[![Docker Pulls](https://raw.githubusercontent.com/hwdsl2/badges/main/img/docker-pulls-ollama-server.svg)](https://hub.docker.com/r/hwdsl2/ollama-server) &nbsp;[![License: MIT](docs/images/license.svg)](https://opensource.org/licenses/MIT)
+
+Run local language models on your own hardware with InferCrate. Powered by [Ollama](https://github.com/ollama/ollama), it provides the native Ollama API and an OpenAI-compatible `/v1` API subset, with API-key authentication, model management, and CPU or NVIDIA GPU deployment.
+
+Previously known as `docker-ollama`. The Docker image remains `hwdsl2/ollama-server`.
 
 **Features:**
 
@@ -13,8 +17,8 @@ Docker image to run an [Ollama](https://github.com/ollama/ollama) local LLM serv
 - **Model pre-pull:** pre-pull models on first start with the `OLLAMA_MODELS` environment variable.
 - **Model management:** via a helper script (`ollama_manage`).
 - **CPU and GPU support:** run on CPU or use the `:cuda` image for NVIDIA GPU acceleration.
-- **Lightweight CPU image:** approximately 75 MB.
-- **Automated builds:** images are automatically built and published through [GitHub Actions](https://github.com/hwdsl2/docker-ollama/actions).
+- **Lightweight CPU image:** based on Debian Trixie (slim); approximately 75 MB.
+- **Automated builds:** images are automatically built and published through [GitHub Actions](https://github.com/hwdsl2/infercrate/actions).
 
 Also available as part of the [Self-Hosted AI Stack](https://github.com/hwdsl2/self-hosted-ai-stack), which deploys a complete self-hosted AI stack with a single command.
 
@@ -22,11 +26,11 @@ Also available as part of the [Self-Hosted AI Stack](https://github.com/hwdsl2/s
 
 **Also available:**
 
-- Related AI services: [ScribeCrate](https://github.com/hwdsl2/scribecrate), [SpeakCrate](https://github.com/hwdsl2/speakcrate), [Embeddings](https://github.com/hwdsl2/docker-embeddings), [LiteLLM](https://github.com/hwdsl2/docker-litellm), [ParseCrate](https://github.com/hwdsl2/parsecrate), [MCP Gateway](https://github.com/hwdsl2/docker-mcp-gateway)
+- Related AI services: [ScribeCrate](https://github.com/hwdsl2/scribecrate), [SpeakCrate](https://github.com/hwdsl2/speakcrate), [EmbedCrate](https://github.com/hwdsl2/embedcrate), [GatewayCrate](https://github.com/hwdsl2/gatewaycrate), [ParseCrate](https://github.com/hwdsl2/parsecrate), [ToolUplink](https://github.com/hwdsl2/tooluplink)
 
 ## Quick start
 
-**Step 1.** Start the Ollama server:
+**Step 1.** Start InferCrate:
 
 ```bash
 docker run \
@@ -52,7 +56,7 @@ docker logs ollama
 infer_api_key="$(docker exec ollama ollama_manage --getkey)"
 ```
 
-The API key is displayed in a box labeled **Ollama API key**. To display it again at any time:
+The API key is displayed in a box labeled **InferCrate API key**. To display it again at any time:
 
 ```bash
 docker exec ollama ollama_manage --showkey
@@ -416,7 +420,7 @@ Your downloaded models are preserved in the `ollama-data` volume.
 
 Ollama can be used as the local LLM service in a broader self-hosted AI setup.
 
-For full and lightweight Docker Compose stacks, manual `docker run` examples, and voice/RAG/MCP pipeline examples with SpeakCrate, Embeddings, LiteLLM, Ollama, ParseCrate, and MCP Gateway, see [Self-Hosted AI Stack](https://github.com/hwdsl2/self-hosted-ai-stack).
+For full and lightweight Docker Compose stacks, manual `docker run` examples, and voice/RAG/MCP pipeline examples with SpeakCrate, EmbedCrate, GatewayCrate, InferCrate, ParseCrate, and ToolUplink, see [Self-Hosted AI Stack](https://github.com/hwdsl2/self-hosted-ai-stack).
 
 **Connect Ollama to LiteLLM:**
 

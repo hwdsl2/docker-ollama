@@ -1,10 +1,14 @@
 [English](README.md) | [简体中文](README-zh.md) | [繁體中文](README-zh-Hant.md) | [Русский](README-ru.md)
 
-# Docker 上的 Ollama 大型語言模型伺服器
+# InferCrate
 
-[![建置狀態](https://github.com/hwdsl2/docker-ollama/actions/workflows/main.yml/badge.svg)](https://github.com/hwdsl2/docker-ollama/actions/workflows/main.yml) &nbsp;[![Docker Pulls](https://raw.githubusercontent.com/hwdsl2/badges/main/img/docker-pulls-ollama-server.svg)](https://hub.docker.com/r/hwdsl2/ollama-server) &nbsp;[![授權條款: MIT](docs/images/license.svg)](https://opensource.org/licenses/MIT)
+**開源、自託管的本地大型語言模型伺服器。**
 
-用於執行 [Ollama](https://github.com/ollama/ollama) 本地大型語言模型伺服器的 Docker 映像。提供 Ollama 與 OpenAI 相容的 `/v1` API 子集，可在本地執行大型語言模型。基於 Debian Trixie（slim）。設計簡單、私密，並預設安全。
+[![建置狀態](https://github.com/hwdsl2/infercrate/actions/workflows/main.yml/badge.svg)](https://github.com/hwdsl2/infercrate/actions/workflows/main.yml) &nbsp;[![Docker Pulls](https://raw.githubusercontent.com/hwdsl2/badges/main/img/docker-pulls-ollama-server.svg)](https://hub.docker.com/r/hwdsl2/ollama-server) &nbsp;[![授權條款: MIT](docs/images/license.svg)](https://opensource.org/licenses/MIT)
+
+使用 InferCrate 在自己的硬體上執行本地語言模型。由 [Ollama](https://github.com/ollama/ollama) 驅動，提供原生 Ollama API 和相容於 OpenAI 的 `/v1` API 子集，支援 API 金鑰驗證、模型管理，以及 CPU 或 NVIDIA GPU 部署。
+
+原名為 `docker-ollama`。Docker 映像仍為 `hwdsl2/ollama-server`。
 
 **功能特色：**
 
@@ -13,8 +17,8 @@
 - **預先拉取模型：** 透過 `OLLAMA_MODELS` 環境變數在首次啟動時預先拉取模型
 - **模型管理：** 透過輔助腳本（`ollama_manage`）管理模型
 - **CPU 與 GPU 支援：** 可在 CPU 上執行，或使用 `:cuda` 映像啟用 NVIDIA GPU 加速。
-- **輕量級 CPU 映像：** 映像大小約為 75 MB。
-- **自動建置：** 透過 [GitHub Actions](https://github.com/hwdsl2/docker-ollama/actions) 自動建置和發布
+- **輕量級 CPU 映像：** 基於 Debian Trixie（slim），映像大小約為 75 MB。
+- **自動建置：** 透過 [GitHub Actions](https://github.com/hwdsl2/infercrate/actions) 自動建置和發布
 
 也可作為 [Self-Hosted AI Stack](https://github.com/hwdsl2/self-hosted-ai-stack/blob/main/README-zh-Hant.md) 的一部分使用，一條命令即可部署完整的自託管 AI 技術堆疊。
 
@@ -22,11 +26,11 @@
 
 **另提供：**
 
-- 相關 AI 服務：[ScribeCrate](https://github.com/hwdsl2/scribecrate/blob/main/README-zh-Hant.md)、[SpeakCrate](https://github.com/hwdsl2/speakcrate/blob/main/README-zh-Hant.md)、[Embeddings](https://github.com/hwdsl2/docker-embeddings/blob/main/README-zh-Hant.md)、[LiteLLM](https://github.com/hwdsl2/docker-litellm/blob/main/README-zh-Hant.md)、[ParseCrate](https://github.com/hwdsl2/parsecrate/blob/main/README-zh-Hant.md)、[MCP Gateway](https://github.com/hwdsl2/docker-mcp-gateway/blob/main/README-zh-Hant.md)
+- 相關 AI 服務：[ScribeCrate](https://github.com/hwdsl2/scribecrate/blob/main/README-zh-Hant.md)、[SpeakCrate](https://github.com/hwdsl2/speakcrate/blob/main/README-zh-Hant.md)、[EmbedCrate](https://github.com/hwdsl2/embedcrate/blob/main/README-zh-Hant.md)、[GatewayCrate](https://github.com/hwdsl2/gatewaycrate/blob/main/README-zh-Hant.md)、[ParseCrate](https://github.com/hwdsl2/parsecrate/blob/main/README-zh-Hant.md)、[ToolUplink](https://github.com/hwdsl2/tooluplink/blob/main/README-zh-Hant.md)
 
 ## 快速開始
 
-**第一步。** 啟動 Ollama 伺服器：
+**第一步。** 啟動 InferCrate：
 
 ```bash
 docker run \
@@ -52,7 +56,7 @@ docker logs ollama
 infer_api_key="$(docker exec ollama ollama_manage --getkey)"
 ```
 
-API 金鑰顯示在標有 **Ollama API key** 的方框中。隨時可以透過以下指令重新顯示：
+API 金鑰顯示在標有 **InferCrate API key** 的方框中。隨時可以透過以下指令重新顯示：
 
 ```bash
 docker exec ollama ollama_manage --showkey
@@ -416,7 +420,7 @@ docker rm -f ollama
 
 Ollama 可作為更廣泛的自託管 AI 設定中的本機 LLM 服務。
 
-如需完整和輕量級 Docker Compose 技術堆疊、手動 `docker run` 範例，以及結合 SpeakCrate、Embeddings、LiteLLM、Ollama、ParseCrate 和 MCP Gateway 的語音/RAG/MCP 流水線範例，請參閱 [Self-Hosted AI Stack](https://github.com/hwdsl2/self-hosted-ai-stack/blob/main/README-zh-Hant.md)。
+如需完整和輕量級 Docker Compose 技術堆疊、手動 `docker run` 範例，以及結合 SpeakCrate、EmbedCrate、GatewayCrate、InferCrate、ParseCrate 和 ToolUplink 的語音/RAG/MCP 流水線範例，請參閱 [Self-Hosted AI Stack](https://github.com/hwdsl2/self-hosted-ai-stack/blob/main/README-zh-Hant.md)。
 
 **將 Ollama 連接到 LiteLLM：**
 

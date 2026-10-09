@@ -8,9 +8,9 @@ assignees: ''
 ---
 **任务列表**
 
-- [ ] 我已阅读[自述文件](https://github.com/hwdsl2/docker-ollama/blob/main/README-zh.md)或相关章节
-- [ ] 我搜索了已有的 [Issues](https://github.com/hwdsl2/docker-ollama/issues?q=is%3Aissue)
-- [ ] 这个问题是关于 Ollama Docker 镜像/配置，而不只是 Ollama 本身
+- [ ] 我已阅读[自述文件](https://github.com/hwdsl2/infercrate/blob/main/README-zh.md)或相关章节
+- [ ] 我搜索了已有的 [Issues](https://github.com/hwdsl2/infercrate/issues?q=is%3Aissue)
+- [ ] 这个问题是关于 InferCrate Docker 镜像/配置，而不只是 Ollama 本身
 
 <!---
 如果你确认问题属于上游项目本身，请考虑在相应上游项目提交 issue：[Ollama](https://github.com/ollama/ollama)。
