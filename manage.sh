@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# https://github.com/hwdsl2/docker-ollama
+# https://github.com/hwdsl2/infercrate
 #
 # Copyright (C) 2026 Lin Song <linsongui@gmail.com>
 #
@@ -22,8 +22,8 @@ show_usage() {
   fi
   cat 1>&2 <<'EOF'
 
-Ollama Docker - Model Management
-https://github.com/hwdsl2/docker-ollama
+InferCrate - Model Management
+https://github.com/hwdsl2/infercrate
 
 Usage: docker exec <container> ollama_manage [options]
 
@@ -248,7 +248,7 @@ do_show_key() {
     return
   fi
   echo "==========================================================="
-  echo "Ollama API key"
+  echo "InferCrate API key"
   echo "==========================================================="
   echo "${OLLAMA_API_KEY}"
   echo "==========================================================="

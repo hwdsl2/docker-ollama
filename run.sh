@@ -5,8 +5,8 @@
 # DO NOT RUN THIS SCRIPT ON YOUR PC OR MAC! THIS IS ONLY MEANT TO BE RUN
 # IN A CONTAINER!
 #
-# This file is part of Ollama Docker image, available at:
-# https://github.com/hwdsl2/docker-ollama
+# This file is part of InferCrate image, available at:
+# https://github.com/hwdsl2/infercrate
 #
 # Copyright (C) 2026 Lin Song <linsongui@gmail.com>
 #
@@ -231,7 +231,7 @@ else
 fi
 
 echo
-echo "Ollama Docker - https://github.com/hwdsl2/docker-ollama"
+echo "InferCrate - https://github.com/hwdsl2/infercrate"
 
 if ! grep -q " /var/lib/ollama " /proc/mounts 2>/dev/null; then
   echo
@@ -371,7 +371,7 @@ fi
 # Display connection info
 echo
 echo "==========================================================="
-echo "Ollama API key"
+echo "InferCrate API key"
 echo "==========================================================="
 echo "${api_key}"
 echo "==========================================================="
