@@ -8,7 +8,7 @@
 
 Запускайте локальные языковые модели на своём оборудовании с InferCrate. Сервер работает на базе [Ollama](https://github.com/ollama/ollama) и предоставляет нативный API Ollama и совместимое с OpenAI подмножество API `/v1`, с аутентификацией по API-ключу, управлением моделями и развёртыванием на CPU или GPU NVIDIA.
 
-Ранее проект назывался `docker-ollama`. Docker-образ остаётся `hwdsl2/ollama-server`.
+> Ранее проект назывался `docker-ollama`. Его поддерживает [hwdsl2](https://github.com/hwdsl2). Docker-образ остаётся `hwdsl2/ollama-server`.
 
 **Возможности:**
 

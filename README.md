@@ -8,7 +8,7 @@
 
 Run local language models on your own hardware with InferCrate. Powered by [Ollama](https://github.com/ollama/ollama), it provides the native Ollama API and an OpenAI-compatible `/v1` API subset, with API-key authentication, model management, and CPU or NVIDIA GPU deployment.
 
-Previously known as `docker-ollama`. The Docker image remains `hwdsl2/ollama-server`.
+> Previously known as `docker-ollama`, maintained by [hwdsl2](https://github.com/hwdsl2). The Docker image remains `hwdsl2/ollama-server`.
 
 **Features:**
 

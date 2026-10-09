@@ -8,7 +8,7 @@
 
 使用 InferCrate 在自己的硬件上运行本地语言模型。由 [Ollama](https://github.com/ollama/ollama) 驱动，提供原生 Ollama API 和 OpenAI 兼容的 `/v1` API 子集，支持 API 密钥身份验证、模型管理，以及 CPU 或 NVIDIA GPU 部署。
 
-原名为 `docker-ollama`。Docker 镜像仍为 `hwdsl2/ollama-server`。
+> 本项目原名为 `docker-ollama`，由 [hwdsl2](https://github.com/hwdsl2) 维护。Docker 镜像仍为 `hwdsl2/ollama-server`。
 
 **功能特性：**
 
