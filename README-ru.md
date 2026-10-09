@@ -49,7 +49,7 @@ docker run \
 docker logs ollama
 
 # Или получение ключа для использования в скриптах
-API_KEY=$(docker exec ollama ollama_manage --getkey)
+infer_api_key="$(docker exec ollama ollama_manage --getkey)"
 ```
 
 API-ключ отображается в рамке с надписью **Ollama API key**. Чтобы отобразить его снова в любое время:
@@ -81,16 +81,16 @@ docker run \
 **Шаг 4.** Протестируйте API:
 
 ```bash
-API_KEY=$(docker exec ollama ollama_manage --getkey)
+infer_api_key="$(docker exec ollama ollama_manage --getkey)"
 
 # Список моделей
 curl http://localhost:11434/api/tags \
-  -H "Authorization: Bearer $API_KEY"
+  -H "Authorization: Bearer $infer_api_key"
 
 # Чат (потоковый вывод)
 curl http://localhost:11434/api/chat \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $API_KEY" \
+  -H "Authorization: Bearer $infer_api_key" \
   -d '{"model": "llama3.2:3b", "messages": [{"role": "user", "content": "Привет!"}]}'
 ```
 
@@ -236,7 +236,7 @@ docker exec ollama ollama_manage --showkey
 **Получить API-ключ** (машиночитаемый формат, для скриптов):
 
 ```bash
-API_KEY=$(docker exec ollama ollama_manage --getkey)
+infer_api_key="$(docker exec ollama ollama_manage --getkey)"
 ```
 
 **Загрузка моделей при первом запуске** — используйте переменную `OLLAMA_MODELS` в файле `env`:
@@ -250,7 +250,7 @@ OLLAMA_MODELS=llama3.2:3b,qwen2.5:7b
 Все API-запросы требуют Bearer Token. Сначала получите API-ключ:
 
 ```bash
-API_KEY=$(docker exec ollama ollama_manage --getkey)
+infer_api_key="$(docker exec ollama ollama_manage --getkey)"
 ```
 
 **API Ollama:**
@@ -258,18 +258,18 @@ API_KEY=$(docker exec ollama ollama_manage --getkey)
 ```bash
 # Список моделей
 curl http://localhost:11434/api/tags \
-  -H "Authorization: Bearer $API_KEY"
+  -H "Authorization: Bearer $infer_api_key"
 
 # Генерация (потоковый вывод)
 curl http://localhost:11434/api/generate \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $API_KEY" \
+  -H "Authorization: Bearer $infer_api_key" \
   -d '{"model": "llama3.2:3b", "prompt": "Почему небо голубое?"}'
 
 # Чат (потоковый вывод)
 curl http://localhost:11434/api/chat \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $API_KEY" \
+  -H "Authorization: Bearer $infer_api_key" \
   -d '{"model": "llama3.2:3b", "messages": [{"role": "user", "content": "Привет!"}]}'
 ```
 
@@ -278,7 +278,7 @@ curl http://localhost:11434/api/chat \
 ```bash
 curl http://localhost:11434/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $API_KEY" \
+  -H "Authorization: Bearer $infer_api_key" \
   -d '{"model": "llama3.2:3b", "messages": [{"role": "user", "content": "Привет!"}]}'
 ```
 

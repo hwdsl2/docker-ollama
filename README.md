@@ -49,7 +49,7 @@ On first start, an API key is auto-generated and displayed in the container logs
 docker logs ollama
 
 # Or retrieve it for use in scripts
-API_KEY=$(docker exec ollama ollama_manage --getkey)
+infer_api_key="$(docker exec ollama ollama_manage --getkey)"
 ```
 
 The API key is displayed in a box labeled **Ollama API key**. To display it again at any time:
@@ -81,16 +81,16 @@ Or add `OLLAMA_MODELS=llama3.2:3b` to your `ollama.env` file (see [Environment v
 **Step 4.** Test with the API:
 
 ```bash
-API_KEY=$(docker exec ollama ollama_manage --getkey)
+infer_api_key="$(docker exec ollama ollama_manage --getkey)"
 
 # List models
 curl http://localhost:11434/api/tags \
-  -H "Authorization: Bearer $API_KEY"
+  -H "Authorization: Bearer $infer_api_key"
 
 # Chat completion (streaming)
 curl http://localhost:11434/api/chat \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $API_KEY" \
+  -H "Authorization: Bearer $infer_api_key" \
   -d '{"model": "llama3.2:3b", "messages": [{"role": "user", "content": "Hello!"}]}'
 ```
 
@@ -236,7 +236,7 @@ docker exec ollama ollama_manage --showkey
 **Get the API key** (machine-readable, for use in scripts):
 
 ```bash
-API_KEY=$(docker exec ollama ollama_manage --getkey)
+infer_api_key="$(docker exec ollama ollama_manage --getkey)"
 ```
 
 **Pull models on first start** using the `OLLAMA_MODELS` variable in your `env` file:
@@ -250,7 +250,7 @@ OLLAMA_MODELS=llama3.2:3b,qwen2.5:7b
 All API requests require a Bearer token. Retrieve the API key first:
 
 ```bash
-API_KEY=$(docker exec ollama ollama_manage --getkey)
+infer_api_key="$(docker exec ollama ollama_manage --getkey)"
 ```
 
 **Ollama API:**
@@ -258,18 +258,18 @@ API_KEY=$(docker exec ollama ollama_manage --getkey)
 ```bash
 # List models
 curl http://localhost:11434/api/tags \
-  -H "Authorization: Bearer $API_KEY"
+  -H "Authorization: Bearer $infer_api_key"
 
 # Generate (streaming)
 curl http://localhost:11434/api/generate \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $API_KEY" \
+  -H "Authorization: Bearer $infer_api_key" \
   -d '{"model": "llama3.2:3b", "prompt": "Why is the sky blue?"}'
 
 # Chat completion (streaming)
 curl http://localhost:11434/api/chat \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $API_KEY" \
+  -H "Authorization: Bearer $infer_api_key" \
   -d '{"model": "llama3.2:3b", "messages": [{"role": "user", "content": "Hello!"}]}'
 ```
 
@@ -278,7 +278,7 @@ curl http://localhost:11434/api/chat \
 ```bash
 curl http://localhost:11434/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $API_KEY" \
+  -H "Authorization: Bearer $infer_api_key" \
   -d '{"model": "llama3.2:3b", "messages": [{"role": "user", "content": "Hello!"}]}'
 ```
 

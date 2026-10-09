@@ -49,7 +49,7 @@ docker run \
 docker logs ollama
 
 # 或取得金鑰以在腳本中使用
-API_KEY=$(docker exec ollama ollama_manage --getkey)
+infer_api_key="$(docker exec ollama ollama_manage --getkey)"
 ```
 
 API 金鑰顯示在標有 **Ollama API key** 的方框中。隨時可以透過以下指令重新顯示：
@@ -81,16 +81,16 @@ docker run \
 **第四步。** 透過 API 測試：
 
 ```bash
-API_KEY=$(docker exec ollama ollama_manage --getkey)
+infer_api_key="$(docker exec ollama ollama_manage --getkey)"
 
 # 列出模型
 curl http://localhost:11434/api/tags \
-  -H "Authorization: Bearer $API_KEY"
+  -H "Authorization: Bearer $infer_api_key"
 
 # 對話補全（串流）
 curl http://localhost:11434/api/chat \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $API_KEY" \
+  -H "Authorization: Bearer $infer_api_key" \
   -d '{"model": "llama3.2:3b", "messages": [{"role": "user", "content": "你好！"}]}'
 ```
 
@@ -236,7 +236,7 @@ docker exec ollama ollama_manage --showkey
 **取得 API 金鑰**（機器可讀，用於腳本）：
 
 ```bash
-API_KEY=$(docker exec ollama ollama_manage --getkey)
+infer_api_key="$(docker exec ollama ollama_manage --getkey)"
 ```
 
 **在首次啟動時拉取模型**，在 `env` 檔案中使用 `OLLAMA_MODELS` 變數：
@@ -250,7 +250,7 @@ OLLAMA_MODELS=llama3.2:3b,qwen2.5:7b
 所有 API 請求均需 Bearer Token。首先取得 API 金鑰：
 
 ```bash
-API_KEY=$(docker exec ollama ollama_manage --getkey)
+infer_api_key="$(docker exec ollama ollama_manage --getkey)"
 ```
 
 **Ollama API：**
@@ -258,18 +258,18 @@ API_KEY=$(docker exec ollama ollama_manage --getkey)
 ```bash
 # 列出模型
 curl http://localhost:11434/api/tags \
-  -H "Authorization: Bearer $API_KEY"
+  -H "Authorization: Bearer $infer_api_key"
 
 # 生成（串流）
 curl http://localhost:11434/api/generate \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $API_KEY" \
+  -H "Authorization: Bearer $infer_api_key" \
   -d '{"model": "llama3.2:3b", "prompt": "天空為什麼是藍色的？"}'
 
 # 對話補全（串流）
 curl http://localhost:11434/api/chat \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $API_KEY" \
+  -H "Authorization: Bearer $infer_api_key" \
   -d '{"model": "llama3.2:3b", "messages": [{"role": "user", "content": "你好！"}]}'
 ```
 
@@ -278,7 +278,7 @@ curl http://localhost:11434/api/chat \
 ```bash
 curl http://localhost:11434/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $API_KEY" \
+  -H "Authorization: Bearer $infer_api_key" \
   -d '{"model": "llama3.2:3b", "messages": [{"role": "user", "content": "你好！"}]}'
 ```
 
